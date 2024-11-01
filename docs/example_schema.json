@@ -1,0 +1,13 @@
+{
+  "bob": "float:TODO:TBD",
+  "decim": "? decimal 0 20 5",
+  "decim": "! decimal 0.13 20.12 3",
+  "lksdf": "! int 0 20",
+  "lksdf": "? int min max",
+  "cobo": "! string 0 12",
+  "lolo": "! enum a b c", TODO: enums with separators?
+  "obj": {
+    "lolo": "int:min:max"
+  },
+  "arr": ["int:min,max", "0:20"]
+}
