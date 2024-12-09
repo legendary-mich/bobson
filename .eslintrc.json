@@ -1,7 +1,7 @@
 {
   "root": true,
   "env": {
-    "es6": true,
+    "es2023": true,
     "node": true
   },
   "extends": "eslint:recommended",
@@ -27,8 +27,10 @@
     "eqeqeq": 2,
     "indent": ["error", 2],
     "no-async-promise-executor": 1,
-    "no-console": 0,
-    "no-unused-vars": 0,
-    "no-use-before-define": ["error", "nofunc"]
+    "no-console": 2,
+    "no-invalid-this": 2,
+    "no-unused-vars": 1,
+    "no-use-before-define": ["error", "nofunc"],
+    "semi": ["error", "never"]
   }
 }

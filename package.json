@@ -1,3 +1,15 @@
 {
-  "private": true
+  "private": true,
+  "scripts": {
+    "test": "mocha test/**/*.js"
+  },
+  "mocha": {
+    "bail": true,
+    "fail-zero": true,
+    "timeout": 1000,
+    "watch": true
+  },
+  "devDependencies": {
+    "mocha": "^10.8.2"
+  }
 }
