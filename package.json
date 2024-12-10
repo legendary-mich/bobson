@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "bench": "node benchmarks/integers.js",
     "test": "mocha test/**/*.js"
   },
   "mocha": {
@@ -10,6 +11,8 @@
     "watch": true
   },
   "devDependencies": {
-    "mocha": "^10.8.2"
+    "ajv": "^8.17.1",
+    "mocha": "^10.8.2",
+    "secure-json-parse": "^3.0.1"
   }
 }
