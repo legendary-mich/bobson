@@ -29,10 +29,13 @@ function run_invalid(t) {
   })
 }
 
-describe('custom serializers', () => {
+describe('serializers', () => {
   describe('simple', () => {
     const tests = [
       ["string 0 10", 'ho', '"ho"', 'string 0 10'],
+      ["string 0 10", 'h"o', '"h\\"o"', 'string 0 10 h"o'],
+      ["string 0 10", 'h\\o', '"h\\\\o"', 'string 0 10 h\\o'],
+      ["string 0 10", String.raw`h\o`, String.raw`"h\\o"`, 'string 0 10 h\\o raw'],
       ["int_4 0 10", 2, '"2"', 'int_4 0 10'],
       ["int_js 0 10", 3, '"3"', 'int_js 0 10'],
       ["int_8 0 10", 4n, '"4"', 'int_8 0 10'],
@@ -42,9 +45,14 @@ describe('custom serializers', () => {
       ["bool", true, '"true"', 'bool true'],
       ["bool", false, '"false"', 'bool false'],
       [{"+ bob":"string 0 10"}, {bob:'don'}, '{"bob":"don"}', 'obj bob'],
+      [{"+ bob":"string 0 10","+ hop":"string 0 10"}, {bob:'don',hop:'lo'}, '{"bob":"don","hop":"lo"}', 'obj bob hop'],
+      [["string 0 10", "0 10"], ['don'], '["don"]', 'arr don'],
       [["string 0 10", "0 10"], ['don','olk'], '["don","olk"]', 'arr don olk'],
 
       ["?string 0 10", 'ho', '"ho"', '?string 0 10'],
+      ["?string 0 10", 'h"o', '"h\\"o"', '?string 0 10 h"o'],
+      ["?string 0 10", 'h\\o', '"h\\\\o"', '?string 0 10 h\\o'],
+      ["?string 0 10", String.raw`h\o`, String.raw`"h\\o"`, '?string 0 10 h\\o raw'],
       ["?int_4 0 10", 2, '"2"', '?int_4 0 10'],
       ["?int_js 0 10", 3, '"3"', '?int_js 0 10'],
       ["?int_8 0 10", 4n, '"4"', '?int_8 0 10'],

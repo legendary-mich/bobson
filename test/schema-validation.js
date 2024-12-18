@@ -21,6 +21,7 @@ describe('schema validation', () => {
   describe('unknown', () => {
     const tests = [
       ['what', 'Unknown schema type: what', 'what'],
+      ['space in the name', 'Unknown schema type: space in the name', 'space in the name'],
       [222, 'Unknown schema type: Number', '222'],
     ]
     for (const t of tests) {

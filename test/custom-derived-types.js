@@ -32,6 +32,7 @@ describe('custom derived types', () => {
   describe('valid', () => {
     const tests = [
       ['color', {'color':'enum red'}, '"red"', 'red', 'color red'],
+      ['space in the name', {'space in the name':'enum red blue'}, '"blue"', 'blue', 'space in the name blue'],
       ['name', {'name':'string 0 2'}, '"bo"', 'bo', 'name bo'],
       ['user', {'user':{'+ name':'string 0 2'}}, '{"name":"bo"}', {name:"bo"}, 'user bo'],
       ['elems', {'elems':['string 0 2', '0 2']}, '["el"]', ['el'], 'elems el'],
@@ -50,6 +51,8 @@ describe('custom derived types', () => {
       ['tree', {'tree':{'- leaf':'tree'}}, '{"leaf":{}}', {leaf:{}}, 'obj tree'],
       ['tree', {'tree':{'+ sth':{'- leaf':'tree'}}}, '{"sth":{"leaf":{"sth":{}}}}', {sth:{leaf:{sth:{}}}}, 'obj tree 2x sth'],
       ['tree', {'tree':{'+ sth':{'- leaf':'tree'}}}, '{"sth":{"leaf":{"sth":{"leaf":{"sth":{}}}}}}', {sth:{leaf:{sth:{leaf:{sth:{}}}}}}, 'obj tree 3x sth'],
+
+      ['space in the name', {'space in the name':{'- leaf':'space in the name'}}, '{"leaf":{}}', {leaf:{}}, 'obj tree with space in the name'],
 
       ['tree', {'tree':{'- a':'string 0 1','- leaf':'tree','- b':'string 0 1'}}, '{"leaf":{"a":"x","leaf":{},"b":"y"}}', {leaf:{a:'x',b:'y',leaf:{}}}, 'obj mixed fields'],
 
@@ -74,6 +77,8 @@ describe('custom derived types', () => {
     const tests = [
       ['?color', {'color':'enum red'}, '"red"', 'red', 'color red'],
       ['?color', {'color':'enum red'}, 'null', null, 'color null'],
+      ['?space in the name', {'space in the name':'enum red blue'}, '"blue"', 'blue', 'space in the name blue'],
+      ['?space in the name', {'space in the name':'enum red blue'}, 'null', null, 'space in the name null'],
       ['?name', {'name':'string 0 2'}, '"bo"', 'bo', 'name bo'],
       ['?name', {'name':'string 0 2'}, 'null', null, 'name null'],
       ['?user', {'user':{'+ name':'string 0 2'}}, '{"name":"bo"}', {name:"bo"}, 'user bo'],
@@ -93,6 +98,9 @@ describe('custom derived types', () => {
       ['?tree', {'tree':{'- leaf':'tree'}}, 'null', null, 'obj tree lvl 0'],
       ['tree', {'tree':{'- leaf':'?tree'}}, '{"leaf":null}', {leaf:null}, 'obj tree lvl 1'],
 
+      ['?space in the name', {'space in the name':{'- leaf':'?space in the name'}}, '{"leaf":{}}', {leaf:{}}, 'obj tree with space in the name: value'],
+      ['?space in the name', {'space in the name':{'- leaf':'?space in the name'}}, '{"leaf":null}', {leaf:null}, 'obj tree with space in the name: null'],
+
       ['?tree', {'tree':['tree','0 3']}, 'null', null, 'arr tree lvl 0'],
       ['tree', {'tree':['?tree','0 3']}, '[null]', [null], 'arr tree lvl 1'],
 
@@ -106,6 +114,8 @@ describe('custom derived types', () => {
     const tests = [
       ['color', {'color':'enum red'}, '"reds"', 'Invalid color: too long', 'color red'],
       ['color', {'color':'enum red'}, 'null', 'Invalid color: null', 'color null'],
+      ['space in the name', {'space in the name':'enum red blue'}, '"blues"', 'Invalid space in the name: too long', 'space in the name too long'],
+      ['space in the name', {'space in the name':'enum red blue'}, 'null', 'Invalid space in the name: null', 'space in the name null'],
       ['name', {'name':'string 0 2'}, '"bos"', 'Invalid name: too long', 'name bo'],
       ['name', {'name':'string 0 2'}, 'null', 'Invalid name: null', 'name null'],
       ['user', {'user':{'+ name':'string 0 2'}}, '{}', 'Invalid user: missing required field: name', 'user bo required'],
@@ -146,6 +156,7 @@ describe('custom derived types', () => {
   describe('?invalid', () => {
     const tests = [
       ['?color', {'color':'enum red'}, '"reds"', 'Invalid ?color: too long', 'color red'],
+      ['?space in the name', {'space in the name':'enum red blue'}, '"blues"', 'Invalid ?space in the name: too long', 'space in the name too long'],
       ['?name', {'name':'string 0 2'}, '"bos"', 'Invalid ?name: too long', 'name bo'],
       ['?user', {'user':{'+ name':'string 0 2'}}, '{}', 'Invalid ?user: missing required field: name', 'user bo'],
       ['?user', {'user':{'+ name':'string 0 2'}}, '{"name":"ass"}', 'Invalid string: too long', 'user bo string too long'],

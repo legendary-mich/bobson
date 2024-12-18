@@ -4,6 +4,7 @@
     "bench": "node benchmarks/integers.js",
     "test": "mocha test/**/*.js"
   },
+  "main": "lib/index.js",
   "mocha": {
     "bail": true,
     "fail-zero": true,

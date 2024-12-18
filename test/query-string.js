@@ -70,7 +70,7 @@ describe('query string', () => {
       [{"+ name":"int_4 0 2"}, undefined, 'Invalid Type. Expected: string, found: undefined', 'undefined query_string'],
       [{"+ name":"int_4 0 2"}, '/status', 'Invalid object: missing required field: name', 'missing ?'],
       [{"+ name":"int_4 0 2"}, '/status?', 'Invalid object: missing required field: name', 'empty qs'],
-      [{"+ name":"int_4 0 2"}, '/status?ha', 'Missing =', 'missing ='],
+      [{"+ name":"int_4 0 2"}, '/status?name', 'Invalid int_4: does not match regex', 'missing ='],
       [{"+ name":"int_4 0 2"}, '/status?ha=', 'Unknown key found: ha', 'unknown memb-name'],
       [{"+ name":"int_4 0 2","+ ha": "string 1 10"}, '/status?ha=a', 'Invalid object: missing required field: name', 'mssing required memb'],
 
