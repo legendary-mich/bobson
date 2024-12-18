@@ -8,6 +8,7 @@ bobson.add_derived_types({
     '+ id': 'int_js 0 100',
     '+ name': 'string 1 10',
   },
+  'custom_alias': 'custom_obj',
 })
 
 function run_invalid_parse(t) {
@@ -66,7 +67,7 @@ describe('error-paths in parse', () => {
       {},
       '{"aba":"a"}', {
         message: 'Unknown key found: aba',
-        path: '',
+        path: 'object',
       },
       'unknown field',
     ],
@@ -74,7 +75,7 @@ describe('error-paths in parse', () => {
       {},
       '{', {
         message: 'Incomplete payload. Some characters are missing at the end',
-        path: '',
+        path: 'object',
       },
       'no enclosing char',
     ],
@@ -90,7 +91,7 @@ describe('error-paths in parse', () => {
       {"+ aba": "string 0 3"},
       '{}', {
         message: 'Invalid object: missing required field: aba',
-        path: '',
+        path: 'object',
       },
       'missing required',
     ],
@@ -98,7 +99,7 @@ describe('error-paths in parse', () => {
       {"+ aba": "string 0 3"},
       '{"aba"}', {
         message: 'Invalid object member-colon. Expected: :, found: }',
-        path: '.aba',
+        path: 'object.aba',
       },
       'invalid colon',
     ],
@@ -106,7 +107,7 @@ describe('error-paths in parse', () => {
       {"+ aba": "string 0 3"},
       '{"aba":}', {
         message: 'Invalid string opening char. Expected: ", found: }',
-        path: '.aba',
+        path: 'object.aba',
       },
       'no value',
     ],
@@ -114,7 +115,7 @@ describe('error-paths in parse', () => {
       {"+ ola": {"+ aba": "string 0 0"}},
       '{"ola":{"aba":"a"}}', {
         message: 'Invalid string: too long',
-        path: '.ola.aba',
+        path: 'object.ola.aba',
       },
       'lvl-2 object',
     ],
@@ -122,7 +123,7 @@ describe('error-paths in parse', () => {
       ["string 2 3", "0 10"],
       'k', {
         message: 'Invalid array opening char. Expected: [, found: k',
-        path: '',
+        path: 'array',
       },
       'invalid array opening',
     ],
@@ -130,7 +131,7 @@ describe('error-paths in parse', () => {
       {"+ olo": ["string 2 3", "0 10"]},
       '{"olo":*}', {
         message: 'Invalid array opening char. Expected: [, found: *',
-        path: '.olo',
+        path: 'object.olo',
       },
       'invalid array opening in an object',
     ],
@@ -138,7 +139,7 @@ describe('error-paths in parse', () => {
       {"+ ola": ["string 2 3", "0 10"]},
       '{"ola":["al","ba","zo","a","ho"]}', {
         message: 'Invalid string: too short',
-        path: '.ola[3]',
+        path: 'object.ola[3]',
       },
       'array in an object',
     ],
@@ -146,7 +147,7 @@ describe('error-paths in parse', () => {
       [["string 0 0", '0 3'], '0 1'],
       '[["","","a",""]]', {
         message: 'Invalid string: too long',
-        path: '[0][2]',
+        path: 'array[0][2]',
       },
       'lvl-2 array',
     ],
@@ -154,7 +155,7 @@ describe('error-paths in parse', () => {
       [{"+ olo":"string 0 3"}, '0 1'],
       '[{"olo":"bora"}]', {
         message: 'Invalid string: too long',
-        path: '[0].olo',
+        path: 'array[0].olo',
       },
       'object in an array',
     ],
@@ -162,9 +163,25 @@ describe('error-paths in parse', () => {
       [{"+ olo":"string 0 3"}, '0 1'],
       '[{}]', {
         message: 'Invalid object: missing required field: olo',
-        path: '[0]',
+        path: 'array[0]',
       },
       'object in an array with no required field',
+    ],
+    [
+      'custom_obj',
+      '{"id":"-20","name":"john"}', {
+        message: 'Invalid int_js: too small',
+        path: 'custom_obj.id',
+      },
+      'custom_obj: id too small',
+    ],
+    [
+      'custom_alias',
+      '{"id":"-20","name":"john"}', {
+        message: 'Invalid int_js: too small',
+        path: 'custom_alias.id',
+      },
+      'custom_alias: id too small',
     ],
   ]
   for (const t of tests) {
@@ -178,7 +195,7 @@ describe('error-paths in parse_chunk', () => {
       {"+ ola": {"+ aba": "string 0 0"}},
       '{"ola":{"aba":"a"}}', {
         message: 'Invalid string: too long',
-        path: '.ola.aba',
+        path: 'object.ola.aba',
       },
       'lvl-2 object',
     ],
@@ -186,7 +203,7 @@ describe('error-paths in parse_chunk', () => {
       [["string 0 0", '0 3'], '0 1'],
       '[["","","a",""]]', {
         message: 'Invalid string: too long',
-        path: '[0][2]',
+        path: 'array[0][2]',
       },
       'lvl-2 array',
     ],
@@ -194,9 +211,25 @@ describe('error-paths in parse_chunk', () => {
       [{"+ olo":"string 0 3"}, '0 1'],
       '[{"olo":"bora"}]', {
         message: 'Invalid string: too long',
-        path: '[0].olo',
+        path: 'array[0].olo',
       },
       'object in an array',
+    ],
+    [
+      'custom_obj',
+      '{"id":"-20","name":"john"}', {
+        message: 'Invalid int_js: too small',
+        path: 'custom_obj.id',
+      },
+      'custom_obj: id too small',
+    ],
+    [
+      'custom_alias',
+      '{"id":"-20","name":"john"}', {
+        message: 'Invalid int_js: too small',
+        path: 'custom_alias.id',
+      },
+      'custom_alias: id too small',
     ],
   ]
   for (const t of tests) {
@@ -208,24 +241,32 @@ describe('error-paths in parse_query', () => {
   const tests = [
     [{"+ name":"string 2 3"}, '/status?na=r', {
       message: 'Unknown key found: na',
-      path: '',
+      path: 'object',
     }, 'name=r'],
     [{"+ name":"string 2 3"}, '/status?name=r', {
       message: 'Invalid string: too short',
-      path: '.name',
+      path: 'object.name',
     }, 'name=r'],
     [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, '/status?ids=1,2&name=r', {
       message: 'Invalid string: too short',
-      path: '.name',
+      path: 'object.name',
     }, 'arr name=r'],
     [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, '/status?ids=1,20&name=r', {
       message: 'Invalid int_4: too long',
-      path: '.ids[1]',
+      path: 'object.ids[1]',
     }, 'arr int too long 1'],
     [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, '/status?name=ra&ids=1,20', {
       message: 'Invalid int_4: too long',
-      path: '.ids[1]',
+      path: 'object.ids[1]',
     }, 'arr int too long 2'],
+    ['custom_obj', '/status?id=-20&name=john', {
+      message: 'Invalid int_js: too small',
+      path: 'custom_obj.id',
+    }, 'custom_obj: id too small'],
+    ['custom_alias', '/status?id=-20&name=john', {
+      message: 'Invalid int_js: too small',
+      path: 'custom_alias.id',
+    }, 'custom_alias: id too small'],
   ]
   for (const t of tests) {
     run_invalid_parse_query(t)
@@ -236,24 +277,32 @@ describe('error-paths in parse_path_params', () => {
   const tests = [
     [{"+ name":"string 2 3"}, {na: 'r'}, {
       message: 'Unknown key found: na',
-      path: '',
+      path: 'object',
     }, 'name=r'],
     [{"+ name":"string 2 3"}, {name: 'r'}, {
       message: 'Invalid string: too short',
-      path: '.name',
+      path: 'object.name',
     }, 'name=r'],
     [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, {ids:'1,2',name:'r'}, {
       message: 'Invalid string: too short',
-      path: '.name',
+      path: 'object.name',
     }, 'arr name=r'],
     [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, {ids:'1,20',name:'r'}, {
       message: 'Invalid int_4: too long',
-      path: '.ids[1]',
+      path: 'object.ids[1]',
     }, 'arr int too long 1'],
     [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, {name:'ra',ids:'1,20'}, {
       message: 'Invalid int_4: too long',
-      path: '.ids[1]',
+      path: 'object.ids[1]',
     }, 'arr int too long 2'],
+    ['custom_obj', {"id":"-20","name":"john"}, {
+      message: 'Invalid int_js: too small',
+      path: 'custom_obj.id',
+    }, 'custom_obj: id too small'],
+    ['custom_alias', {"id":"-20","name":"john"}, {
+      message: 'Invalid int_js: too small',
+      path: 'custom_alias.id',
+    }, 'custom_alias: id too small'],
   ]
   for (const t of tests) {
     run_invalid_parse_path_params(t)
