@@ -192,28 +192,16 @@ console.log('// output:', parsed_color)
 ## add_base_types
 **TODO: TBD**
 
-## parse_query_string
+## parse_flat_pairs
 ```javascript
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
-const query_schema = {
+const schema = {
   '+ id': 'int_js 1 max',
+  '+ values': ['array 0 3', 'int_4 0 20'],
 }
-const parsed_query = bobson.parse_query_string(query_schema, '/user?id=200')
+const parsed_pairs = bobson.parse_flat_pairs(schema, [['id', '200'],['values', '2,3,4']])
 
-console.log('// output:', parsed_query)
-// output: { id: 200 }
-```
-## parse_path_params
-```javascript
-const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-const query_schema = {
-  '+ id': 'int_js 1 max',
-}
-const path_params = {id: '200'}
-const parsed_query = bobson.parse_path_params(query_schema, path_params)
-
-console.log('// output:', parsed_query)
-// output: { id: 200 }
+console.log('// output:', parsed_pairs)
+// output: { id: 200, values: [ 2, 3, 4 ] }
 ```

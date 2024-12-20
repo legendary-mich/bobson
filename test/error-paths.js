@@ -37,22 +37,10 @@ function run_invalid_parse_chunk(t) {
   })
 }
 
-function run_invalid_parse_query(t) {
+function run_invalid_parse_flat_pairs(t) {
   it(t[3], () => {
     try {
-      bobson.parse_query_string(t[0], t[1])
-      throw new Error('should have thrown')
-    }
-    catch (err) {
-      deepEq({message: err.message, path: err.path}, t[2])
-    }
-  })
-}
-
-function run_invalid_parse_path_params(t) {
-  it(t[3], () => {
-    try {
-      bobson.parse_path_params(t[0], t[1])
+      bobson.parse_flat_pairs(t[0], t[1])
       throw new Error('should have thrown')
     }
     catch (err) {
@@ -237,75 +225,47 @@ describe('error-paths in parse_chunk', () => {
   }
 })
 
-describe('error-paths in parse_query', () => {
+describe('error-paths in parse_flat_pairs', () => {
   const tests = [
-    [{"+ name":"string 2 3"}, '/status?na=r', {
+    [{"+ name":"string 2 3"}, [[]], {
+      message: 'Unknown key found: undefined',
+      path: 'object',
+    }, 'no key'],
+    [{"+ name":"string 2 3"}, [['name']], {
+      message: 'Invalid Type. Expected: string, found: undefined',
+      path: 'object.name',
+    }, 'no value'],
+    [{"+ name":"string 2 3"}, [['na', 'r']], {
       message: 'Unknown key found: na',
       path: 'object',
-    }, 'name=r'],
-    [{"+ name":"string 2 3"}, '/status?name=r', {
+    }, 'na=r'],
+    [{"+ name":"string 2 3"}, [['name', 'r']], {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'name=r'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, '/status?ids=1,2&name=r', {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, [['ids', '1,2'],['name','r']], {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'arr name=r'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, '/status?ids=1,20&name=r', {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, [['ids','1,20'],['name','r']], {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 1'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, '/status?name=ra&ids=1,20', {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, [['name','ra'],['ids','1,20']], {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 2'],
-    ['custom_obj', '/status?id=-20&name=john', {
+    ['custom_obj', [['id','-20'],['name','john']], {
       message: 'Invalid int_js: too small',
       path: 'custom_obj.id',
     }, 'custom_obj: id too small'],
-    ['custom_alias', '/status?id=-20&name=john', {
+    ['custom_alias', [['id','-20'],['name','john']], {
       message: 'Invalid int_js: too small',
       path: 'custom_alias.id',
     }, 'custom_alias: id too small'],
   ]
   for (const t of tests) {
-    run_invalid_parse_query(t)
-  }
-})
-
-describe('error-paths in parse_path_params', () => {
-  const tests = [
-    [{"+ name":"string 2 3"}, {na: 'r'}, {
-      message: 'Unknown key found: na',
-      path: 'object',
-    }, 'name=r'],
-    [{"+ name":"string 2 3"}, {name: 'r'}, {
-      message: 'Invalid string: too short',
-      path: 'object.name',
-    }, 'name=r'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, {ids:'1,2',name:'r'}, {
-      message: 'Invalid string: too short',
-      path: 'object.name',
-    }, 'arr name=r'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, {ids:'1,20',name:'r'}, {
-      message: 'Invalid int_4: too long',
-      path: 'object.ids[1]',
-    }, 'arr int too long 1'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, {name:'ra',ids:'1,20'}, {
-      message: 'Invalid int_4: too long',
-      path: 'object.ids[1]',
-    }, 'arr int too long 2'],
-    ['custom_obj', {"id":"-20","name":"john"}, {
-      message: 'Invalid int_js: too small',
-      path: 'custom_obj.id',
-    }, 'custom_obj: id too small'],
-    ['custom_alias', {"id":"-20","name":"john"}, {
-      message: 'Invalid int_js: too small',
-      path: 'custom_alias.id',
-    }, 'custom_alias: id too small'],
-  ]
-  for (const t of tests) {
-    run_invalid_parse_path_params(t)
+    run_invalid_parse_flat_pairs(t)
   }
 })
 
