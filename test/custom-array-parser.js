@@ -31,10 +31,10 @@ describe('custom array parsers', () => {
   describe('top-level-array', () => {
     describe('array valid', () => {
       const tests = [
-        [['string 0 1','0 2'], '[]', 0, 'empty'],
-        [['string 0 1','0 2'], '["a"]', 1, 'single elem'],
-        [['string 0 1','0 2'], '["a","b"]', 2, 'two elems'],
-        [[['string 0 1','0 2'],'0 2'], '[["a","b"]]', 1, 'recursive'],
+        [['array 0 2','string 0 1'], '[]', 0, 'empty'],
+        [['array 0 2','string 0 1'], '["a"]', 1, 'single elem'],
+        [['array 0 2','string 0 1'], '["a","b"]', 2, 'two elems'],
+        [['array 0 2',['array 0 2','string 0 1']], '[["a","b"]]', 1, 'recursive'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -43,12 +43,12 @@ describe('custom array parsers', () => {
 
     describe('?array valid', () => {
       const tests = [
-        [['?','string 0 1','0 2'], '[]', 0, 'empty'],
-        [['?','string 0 1','0 2'], '["a"]', 1, 'single elem'],
-        [['?','string 0 1','0 2'], '["a","b"]', 2, 'two elems'],
-        [[['?','string 0 1','0 2'],'0 2'], '[["a","b"]]', 1, 'recursive'],
+        [['?array 0 2','string 0 1'], '[]', 0, 'empty'],
+        [['?array 0 2','string 0 1'], '["a"]', 1, 'single elem'],
+        [['?array 0 2','string 0 1'], '["a","b"]', 2, 'two elems'],
+        [['array 0 2',['?array 0 2','string 0 1']], '[["a","b"]]', 1, 'recursive'],
 
-        [['?','string 0 1','0 2'], 'null', null, 'null'],
+        [['?array 0 2','string 0 1'], 'null', null, 'null'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -57,10 +57,10 @@ describe('custom array parsers', () => {
 
     describe('array invalid', () => {
       const tests = [
-        [['string 0 1','1 2'], '[]', 'Invalid array: too short', 'too short'],
-        [['string 0 1','1 2'], '["a","b","c"]', 'Invalid array: too long', 'too long'],
-        [[['string 0 1','2 2'],'2 2'], '[["a","b"]]', 'Invalid array: too short', '1st level too short'],
-        [[['string 0 1','2 2'],'2 2'], '[["c"],["a","b"]]', 'Invalid array: too short', '2nd level too short'],
+        [['array 1 2','string 0 1'], '[]', 'Invalid array: too short', 'too short'],
+        [['array 1 2','string 0 1'], '["a","b","c"]', 'Invalid array: too long', 'too long'],
+        [['array 2 2',['array 2 2','string 0 1']], '[["a","b"]]', 'Invalid array: too short', '1st level too short'],
+        [['array 2 2',['array 2 2','string 0 1']], '[["c"],["a","b"]]', 'Invalid array: too short', '2nd level too short'],
       ]
       for (const t of tests) {
         run_invalid(t)
@@ -69,8 +69,8 @@ describe('custom array parsers', () => {
 
     describe('?array invalid', () => {
       const tests = [
-        [['?','string 0 1','1 2'], '[]', 'Invalid ?array: too short', 'too short'],
-        [['?','string 0 1','1 2'], '["a","b","c"]', 'Invalid ?array: too long', 'too long'],
+        [['?array 1 2','string 0 1'], '[]', 'Invalid ?array: too short', 'too short'],
+        [['?array 1 2','string 0 1'], '["a","b","c"]', 'Invalid ?array: too long', 'too long'],
       ]
       for (const t of tests) {
         run_invalid(t)
@@ -79,7 +79,7 @@ describe('custom array parsers', () => {
 
     describe('non-nullable null', () => {
       const tests = [
-        [['string 0 1','1 2'], 'null', 'Invalid array: null', 'too long'],
+        [['array 1 2','string 0 1'], 'null', 'Invalid array: null', 'too long'],
       ]
       for (const t of tests) {
         run_invalid(t)

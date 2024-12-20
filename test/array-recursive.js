@@ -28,18 +28,18 @@ function run_invalid(t) {
 describe('array recursive', () => {
   describe('array valid', () => {
     const tests = [
-      [[['string 1 1', '0 0'], '0 1'], '[[]]', [[]], '0 0 empty'],
-      [[['string 1 1', '0 1'], '0 1'], '[[]]', [[]], '0 1 empty'],
-      [[['string 1 1', '1 1'], '0 1'], '[["a"]]', [['a']], '1 1 a'],
-      [[['string 1 1', '0 1'], '0 1'], '[["a"]]', [['a']], '0 1 a'],
-      [[['string 1 1', '1 2'], '0 1'], '[["a"]]', [['a']], '1 2 a'],
-      [[['string 1 1', '0 2'], '0 1'], '[["a"]]', [['a']], '0 2 a'],
-      [[['string 1 1', '2 2'], '0 1'], '[["b","c"]]', [['b','c']], '2 2 bc'],
-      [[['string 1 1', '1 2'], '0 1'], '[["b","c"]]', [['b','c']], '1 2 bc'],
-      [[['string 1 1', '2 3'], '0 1'], '[["b","c"]]', [['b','c']], '2 3 bc'],
-      [[['string 1 1', '1 3'], '0 1'], '[["b","c"]]', [['b','c']], '1 3 bc'],
+      [['array 0 1', ['array 0 0', 'string 1 1']], '[[]]', [[]], '0 0 empty'],
+      [['array 0 1', ['array 0 1', 'string 1 1']], '[[]]', [[]], '0 1 empty'],
+      [['array 0 1', ['array 1 1', 'string 1 1']], '[["a"]]', [['a']], '1 1 a'],
+      [['array 0 1', ['array 0 1', 'string 1 1']], '[["a"]]', [['a']], '0 1 a'],
+      [['array 0 1', ['array 1 2', 'string 1 1']], '[["a"]]', [['a']], '1 2 a'],
+      [['array 0 1', ['array 0 2', 'string 1 1']], '[["a"]]', [['a']], '0 2 a'],
+      [['array 0 1', ['array 2 2', 'string 1 1']], '[["b","c"]]', [['b','c']], '2 2 bc'],
+      [['array 0 1', ['array 1 2', 'string 1 1']], '[["b","c"]]', [['b','c']], '1 2 bc'],
+      [['array 0 1', ['array 2 3', 'string 1 1']], '[["b","c"]]', [['b','c']], '2 3 bc'],
+      [['array 0 1', ['array 1 3', 'string 1 1']], '[["b","c"]]', [['b','c']], '1 3 bc'],
 
-      [[['string 1 1', '1 1'], '0 2'], '[["d"],["e"]]', [['d'],['e']], '0 2 de'],
+      [['array 0 2', ['array 1 1', 'string 1 1']], '[["d"],["e"]]', [['d'],['e']], '0 2 de'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -48,21 +48,21 @@ describe('array recursive', () => {
 
   describe('?array valid', () => {
     const tests = [
-      [[['?', 'string 1 1', '0 0'], '0 1'], '[[]]', [[]], '0 0 empty'],
-      [[['?', 'string 1 1', '0 1'], '0 1'], '[[]]', [[]], '0 1 empty'],
-      [[['?', 'string 1 1', '1 1'], '0 1'], '[["a"]]', [['a']], '1 1 a'],
-      [[['?', 'string 1 1', '0 1'], '0 1'], '[["a"]]', [['a']], '0 1 a'],
-      [[['?', 'string 1 1', '1 2'], '0 1'], '[["a"]]', [['a']], '1 2 a'],
-      [[['?', 'string 1 1', '0 2'], '0 1'], '[["a"]]', [['a']], '0 2 a'],
-      [[['?', 'string 1 1', '2 2'], '0 1'], '[["b","c"]]', [['b','c']], '2 2 bc'],
-      [[['?', 'string 1 1', '1 2'], '0 1'], '[["b","c"]]', [['b','c']], '1 2 bc'],
-      [[['?', 'string 1 1', '2 3'], '0 1'], '[["b","c"]]', [['b','c']], '2 3 bc'],
-      [[['?', 'string 1 1', '1 3'], '0 1'], '[["b","c"]]', [['b','c']], '1 3 bc'],
+      [['array 0 1', ['?array 0 0', 'string 1 1']], '[[]]', [[]], '0 0 empty'],
+      [['array 0 1', ['?array 0 1', 'string 1 1']], '[[]]', [[]], '0 1 empty'],
+      [['array 0 1', ['?array 1 1', 'string 1 1']], '[["a"]]', [['a']], '1 1 a'],
+      [['array 0 1', ['?array 0 1', 'string 1 1']], '[["a"]]', [['a']], '0 1 a'],
+      [['array 0 1', ['?array 1 2', 'string 1 1']], '[["a"]]', [['a']], '1 2 a'],
+      [['array 0 1', ['?array 0 2', 'string 1 1']], '[["a"]]', [['a']], '0 2 a'],
+      [['array 0 1', ['?array 2 2', 'string 1 1']], '[["b","c"]]', [['b','c']], '2 2 bc'],
+      [['array 0 1', ['?array 1 2', 'string 1 1']], '[["b","c"]]', [['b','c']], '1 2 bc'],
+      [['array 0 1', ['?array 2 3', 'string 1 1']], '[["b","c"]]', [['b','c']], '2 3 bc'],
+      [['array 0 1', ['?array 1 3', 'string 1 1']], '[["b","c"]]', [['b','c']], '1 3 bc'],
 
-      [[['?', 'string 1 1', '1 1'], '0 2'], '[["d"],["e"]]', [['d'],['e']], '0 2 de'],
+      [['array 0 2', ['?array 1 1', 'string 1 1']], '[["d"],["e"]]', [['d'],['e']], '0 2 de'],
 
-      [[['?', 'string 1 1', '0 0'], '0 1'], '[null]', [null], '0 0 null'],
-      [[['?', 'string 1 1', '1 1'], '0 2'], '[null,null]', [null,null], '0 2 null null'],
+      [['array 0 1', ['?array 0 0', 'string 1 1']], '[null]', [null], '0 0 null'],
+      [['array 0 2', ['?array 1 1', 'string 1 1']], '[null,null]', [null,null], '0 2 null null'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -71,12 +71,12 @@ describe('array recursive', () => {
 
   describe('array too short', () => {
     const tests = [
-      [[['string 1 1', '1 1'], '0 1'], '[[]]', 'Invalid array: too short', '1 1 empty'],
-      [[['string 1 1', '1 2'], '0 1'], '[[]]', 'Invalid array: too short', '1 2 empty'],
-      [[['string 1 1', '2 2'], '0 1'], '[["a"]]', 'Invalid array: too short', '2 2 a'],
-      [[['string 1 1', '2 3'], '0 1'], '[["a"]]', 'Invalid array: too short', '2 3 a'],
-      [[['string 1 1', '3 3'], '0 1'], '[["b","c"]]', 'Invalid array: too short', '3 3 bc'],
-      [[['string 1 1', '3 4'], '0 1'], '[["b","c"]]', 'Invalid array: too short', '3 4 bc'],
+      [['array 0 1', ['array 1 1', 'string 1 1']], '[[]]', 'Invalid array: too short', '1 1 empty'],
+      [['array 0 1', ['array 1 2', 'string 1 1']], '[[]]', 'Invalid array: too short', '1 2 empty'],
+      [['array 0 1', ['array 2 2', 'string 1 1']], '[["a"]]', 'Invalid array: too short', '2 2 a'],
+      [['array 0 1', ['array 2 3', 'string 1 1']], '[["a"]]', 'Invalid array: too short', '2 3 a'],
+      [['array 0 1', ['array 3 3', 'string 1 1']], '[["b","c"]]', 'Invalid array: too short', '3 3 bc'],
+      [['array 0 1', ['array 3 4', 'string 1 1']], '[["b","c"]]', 'Invalid array: too short', '3 4 bc'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -85,12 +85,12 @@ describe('array recursive', () => {
 
   describe('?array too short', () => {
     const tests = [
-      [[['?', 'string 1 1', '1 1'], '0 1'], '[[]]', 'Invalid ?array: too short', '1 1 empty'],
-      [[['?', 'string 1 1', '1 2'], '0 1'], '[[]]', 'Invalid ?array: too short', '1 2 empty'],
-      [[['?', 'string 1 1', '2 2'], '0 1'], '[["a"]]', 'Invalid ?array: too short', '2 2 a'],
-      [[['?', 'string 1 1', '2 3'], '0 1'], '[["a"]]', 'Invalid ?array: too short', '2 3 a'],
-      [[['?', 'string 1 1', '3 3'], '0 1'], '[["b","c"]]', 'Invalid ?array: too short', '3 3 bc'],
-      [[['?', 'string 1 1', '3 4'], '0 1'], '[["b","c"]]', 'Invalid ?array: too short', '3 4 bc'],
+      [['array 0 1', ['?array 1 1', 'string 1 1']], '[[]]', 'Invalid ?array: too short', '1 1 empty'],
+      [['array 0 1', ['?array 1 2', 'string 1 1']], '[[]]', 'Invalid ?array: too short', '1 2 empty'],
+      [['array 0 1', ['?array 2 2', 'string 1 1']], '[["a"]]', 'Invalid ?array: too short', '2 2 a'],
+      [['array 0 1', ['?array 2 3', 'string 1 1']], '[["a"]]', 'Invalid ?array: too short', '2 3 a'],
+      [['array 0 1', ['?array 3 3', 'string 1 1']], '[["b","c"]]', 'Invalid ?array: too short', '3 3 bc'],
+      [['array 0 1', ['?array 3 4', 'string 1 1']], '[["b","c"]]', 'Invalid ?array: too short', '3 4 bc'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -99,9 +99,9 @@ describe('array recursive', () => {
 
   describe('array too long', () => {
     const tests = [
-      [[['string 1 1', '0 0'], '0 10'], '[["a"]]', 'Invalid array: too long', '0 0 a'],
-      [[['string 1 1', '0 1'], '0 10'], '[["b","c"]]', 'Invalid array: too long', '0 1 bc'],
-      [[['string 1 1', '1 1'], '0 10'], '[["b","c"]]', 'Invalid array: too long', '1 1 bc'],
+      [['array 0 10', ['array 0 0', 'string 1 1']], '[["a"]]', 'Invalid array: too long', '0 0 a'],
+      [['array 0 10', ['array 0 1', 'string 1 1']], '[["b","c"]]', 'Invalid array: too long', '0 1 bc'],
+      [['array 0 10', ['array 1 1', 'string 1 1']], '[["b","c"]]', 'Invalid array: too long', '1 1 bc'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -110,9 +110,9 @@ describe('array recursive', () => {
 
   describe('?array too long', () => {
     const tests = [
-      [[['?', 'string 1 1', '0 0'], '0 10'], '[["a"]]', 'Invalid ?array: too long', '0 0 a'],
-      [[['?', 'string 1 1', '0 1'], '0 10'], '[["b","c"]]', 'Invalid ?array: too long', '0 1 bc'],
-      [[['?', 'string 1 1', '1 1'], '0 10'], '[["b","c"]]', 'Invalid ?array: too long', '1 1 bc'],
+      [['array 0 10', ['?array 0 0', 'string 1 1']], '[["a"]]', 'Invalid ?array: too long', '0 0 a'],
+      [['array 0 10', ['?array 0 1', 'string 1 1']], '[["b","c"]]', 'Invalid ?array: too long', '0 1 bc'],
+      [['array 0 10', ['?array 1 1', 'string 1 1']], '[["b","c"]]', 'Invalid ?array: too long', '1 1 bc'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -121,7 +121,7 @@ describe('array recursive', () => {
 
   describe('non-nullable null', () => {
     const tests = [
-      [[['string 1 1', '0 0'], '0 1'], '[null]', 'Invalid array: null', 'null'],
+      [['array 0 1', ['array 0 0', 'string 1 1']], '[null]', 'Invalid array: null', 'null'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -130,8 +130,8 @@ describe('array recursive', () => {
 
   describe('invalid string inside an array', () => {
     const tests = [
-      [[['string 1 1', '0 1'], '0 1'], '[["ab"]]', 'Invalid string: too long', 'ab'],
-      [[['?', 'string 1 1', '0 1'], '0 1'], '[["ab"]]', 'Invalid string: too long', '? ab'],
+      [['array 0 1', ['array 0 1', 'string 1 1']], '[["ab"]]', 'Invalid string: too long', 'ab'],
+      [['array 0 1', ['?array 0 1', 'string 1 1']], '[["ab"]]', 'Invalid string: too long', '? ab'],
     ]
     for (const t of tests) {
       run_invalid(t)

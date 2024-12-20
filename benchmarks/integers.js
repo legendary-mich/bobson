@@ -3,7 +3,7 @@
 const {Benchmark_Runner} = require('./runner.js')
 const {build_benchmark_cases} = require('./case-builder.js')
 
-const bobson_schema = ["int_4 min max", "0 20"]
+const bobson_schema = ["array 0 20", "int_4 min max"]
 const payload = '["222","98374","-298344","92344","0","-9283434","9843444"]'
 const ajv_schema = {
   type: 'array',

@@ -35,17 +35,17 @@ describe('custom derived types', () => {
       ['space in the name', {'space in the name':'enum red blue'}, '"blue"', 'blue', 'space in the name blue'],
       ['name', {'name':'string 0 2'}, '"bo"', 'bo', 'name bo'],
       ['user', {'user':{'+ name':'string 0 2'}}, '{"name":"bo"}', {name:"bo"}, 'user bo'],
-      ['elems', {'elems':['string 0 2', '0 2']}, '["el"]', ['el'], 'elems el'],
+      ['elems', {'elems':['array 0 2', 'string 0 2']}, '["el"]', ['el'], 'elems el'],
 
       [{'+ bob':'user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":{"name":"bo"}}', {bob:{name:"bo"}}, 'bob user bo'],
-      [['elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', 'elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["el"]]', [['el']], '[elems el]'],
 
       [{'+ bob':'user','+ ola':'user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":{"name":"bo"},"ola":{"name":"ha"}}',
         {bob:{name:"bo"},ola:{name:"ha"}}, 'bob,ola user'],
-      [['elems', '0 2'], {'elems':['string 0 2', '0 2']},
+      [['array 0 2', 'elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["el"],["ol"]]', [['el'],['ol']], '[elems el ol]'],
 
       ['tree', {'tree':{'- leaf':'tree'}}, '{"leaf":{}}', {leaf:{}}, 'obj tree'],
@@ -56,17 +56,17 @@ describe('custom derived types', () => {
 
       ['tree', {'tree':{'- a':'string 0 1','- leaf':'tree','- b':'string 0 1'}}, '{"leaf":{"a":"x","leaf":{},"b":"y"}}', {leaf:{a:'x',b:'y',leaf:{}}}, 'obj mixed fields'],
 
-      ['tree', {'tree':['tree','0 3']}, '[]', [], 'arr tree lvl 0'],
-      ['tree', {'tree':['tree','0 3']}, '[[],[]]', [[],[]], 'arr tree lvl 1'],
-      ['tree', {'tree':['tree','0 3']}, '[[[],[]],[]]', [[[],[]],[]], 'arr tree lvl 2'],
+      ['tree', {'tree':['array 0 3','tree']}, '[]', [], 'arr tree lvl 0'],
+      ['tree', {'tree':['array 0 3','tree']}, '[[],[]]', [[],[]], 'arr tree lvl 1'],
+      ['tree', {'tree':['array 0 3','tree']}, '[[[],[]],[]]', [[[],[]],[]], 'arr tree lvl 2'],
 
-      ['tree', {'tree':{'+ sth':['tree','0 3']}}, '{"sth":[]}', {sth:[]}, 'obj-arr tree lvl 0'],
-      ['tree', {'tree':{'+ sth':['tree','0 3']}}, '{"sth":[{"sth":[]}]}', {sth:[{sth:[]}]}, 'obj-arr tree lvl 1'],
-      ['tree', {'tree':{'+ sth':['tree','0 3']}}, '{"sth":[{"sth":[{"sth":[]},{"sth":[]}]}]}', {sth:[{sth:[{sth:[]},{sth:[]}]}]}, 'obj-arr tree lvl 2'],
+      ['tree', {'tree':{'+ sth':['array 0 3','tree']}}, '{"sth":[]}', {sth:[]}, 'obj-arr tree lvl 0'],
+      ['tree', {'tree':{'+ sth':['array 0 3','tree']}}, '{"sth":[{"sth":[]}]}', {sth:[{sth:[]}]}, 'obj-arr tree lvl 1'],
+      ['tree', {'tree':{'+ sth':['array 0 3','tree']}}, '{"sth":[{"sth":[{"sth":[]},{"sth":[]}]}]}', {sth:[{sth:[{sth:[]},{sth:[]}]}]}, 'obj-arr tree lvl 2'],
 
-      ['tree', {'tree':[{'+ sth':'tree'},'0 3']}, '[]', [], 'arr-obj tree lvl 0'],
-      ['tree', {'tree':[{'+ sth':'tree'},'0 3']}, '[{"sth":[]}]', [{sth:[]}], 'arr-obj tree lvl 1'],
-      ['tree', {'tree':[{'+ sth':'tree'},'0 3']}, '[{"sth":[{"sth":[]},{"sth":[]}]}]', [{sth:[{sth:[]},{sth:[]}]}], 'arr-obj tree lvl 2'],
+      ['tree', {'tree':['array 0 3',{'+ sth':'tree'}]}, '[]', [], 'arr-obj tree lvl 0'],
+      ['tree', {'tree':['array 0 3',{'+ sth':'tree'}]}, '[{"sth":[]}]', [{sth:[]}], 'arr-obj tree lvl 1'],
+      ['tree', {'tree':['array 0 3',{'+ sth':'tree'}]}, '[{"sth":[{"sth":[]},{"sth":[]}]}]', [{sth:[{sth:[]},{sth:[]}]}], 'arr-obj tree lvl 2'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -83,16 +83,16 @@ describe('custom derived types', () => {
       ['?name', {'name':'string 0 2'}, 'null', null, 'name null'],
       ['?user', {'user':{'+ name':'string 0 2'}}, '{"name":"bo"}', {name:"bo"}, 'user bo'],
       ['?user', {'user':{'+ name':'string 0 2'}}, 'null', null, 'user null'],
-      ['?elems', {'elems':['string 0 2', '0 2']}, '["el"]', ['el'], 'elems el'],
-      ['?elems', {'elems':['string 0 2', '0 2']}, 'null', null, 'elems null'],
+      ['?elems', {'elems':['array 0 2', 'string 0 2']}, '["el"]', ['el'], 'elems el'],
+      ['?elems', {'elems':['array 0 2', 'string 0 2']}, 'null', null, 'elems null'],
 
       [{'+ bob':'?user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":{"name":"bo"}}', {bob:{name:"bo"}}, 'bob user bo'],
       [{'+ bob':'?user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":null}', {bob:null}, 'bob user null'],
-      [['?elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', '?elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["el"]]', [['el']], '[elems el]'],
-      [['?elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', '?elems'], {'elems':['array 0 2', 'string 0 2']},
         '[null]', [null], '[elems null]'],
 
       ['?tree', {'tree':{'- leaf':'tree'}}, 'null', null, 'obj tree lvl 0'],
@@ -101,8 +101,8 @@ describe('custom derived types', () => {
       ['?space in the name', {'space in the name':{'- leaf':'?space in the name'}}, '{"leaf":{}}', {leaf:{}}, 'obj tree with space in the name: value'],
       ['?space in the name', {'space in the name':{'- leaf':'?space in the name'}}, '{"leaf":null}', {leaf:null}, 'obj tree with space in the name: null'],
 
-      ['?tree', {'tree':['tree','0 3']}, 'null', null, 'arr tree lvl 0'],
-      ['tree', {'tree':['?tree','0 3']}, '[null]', [null], 'arr tree lvl 1'],
+      ['?tree', {'tree':['array 0 3','tree']}, 'null', null, 'arr tree lvl 0'],
+      ['tree', {'tree':['array 0 3','?tree']}, '[null]', [null], 'arr tree lvl 1'],
 
     ]
     for (const t of tests) {
@@ -121,9 +121,9 @@ describe('custom derived types', () => {
       ['user', {'user':{'+ name':'string 0 2'}}, '{}', 'Invalid user: missing required field: name', 'user bo required'],
       ['user', {'user':{'+ name':'string 0 2'}}, '{"name":"ass"}', 'Invalid string: too long', 'user bo string too long'],
       ['user', {'user':{'+ name':'string 0 2'}}, 'null', 'Invalid user: null', 'user null'],
-      ['elems', {'elems':['string 0 2', '1 2']}, '[]', 'Invalid elems: too short', 'elems el too short'],
-      ['elems', {'elems':['string 0 2', '1 2']}, '["ass"]', 'Invalid string: too long', 'elems el string'],
-      ['elems', {'elems':['string 0 2', '1 2']}, 'null', 'Invalid elems: null', 'elems null'],
+      ['elems', {'elems':['array 1 2', 'string 0 2']}, '[]', 'Invalid elems: too short', 'elems el too short'],
+      ['elems', {'elems':['array 1 2', 'string 0 2']}, '["ass"]', 'Invalid string: too long', 'elems el string'],
+      ['elems', {'elems':['array 1 2', 'string 0 2']}, 'null', 'Invalid elems: null', 'elems null'],
 
       [{'+ bob':'user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":{"names":"bo"}}', 'Unknown key found: names', 'bob user bo required'],
@@ -131,22 +131,22 @@ describe('custom derived types', () => {
         '{"bob":{"name":"bos"}}', 'Invalid string: too long', 'bob user bo too long'],
       [{'+ bob':'user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":null}', 'Invalid user: null', 'bob user null'],
-      [['elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', 'elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["el"],[]]', 'Invalid array: too long', 'array too long'],
-      [['elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', 'elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["els"]]', 'Invalid string: too long', 'string too long'],
-      [['elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', 'elems'], {'elems':['array 0 2', 'string 0 2']},
         '[null]', 'Invalid elems: null', '[elems null]'],
 
       ['tree', {'tree':{'+ leaf':'tree'}}, '{"leaf":{}}', 'Invalid tree: missing required field: leaf', 'obj tree missing leaf'],
       ['tree', {'tree':{'- leaf':'tree'}}, '{"leaf":null}', 'Invalid tree: null', 'obj tree invalid null'],
       ['tree', {'tree':{'- leaf':'tree','+ a': 'string 2 2'}}, '{"leaf":{"a":"z"}}', 'Invalid string: too short', 'obj tree string too short'],
 
-      ['tree', {'tree':['tree','1 3']}, '[]', 'Invalid tree: too short', 'arr tree too short lvl 1'],
-      ['tree', {'tree':['tree','1 3']}, '[[]]', 'Invalid tree: too short', 'arr tree too short lvl 2'],
-      ['tree', {'tree':['tree','1 3']}, 'null', 'Invalid tree: null', 'arr tree null'],
+      ['tree', {'tree':['array 1 3','tree']}, '[]', 'Invalid tree: too short', 'arr tree too short lvl 1'],
+      ['tree', {'tree':['array 1 3','tree']}, '[[]]', 'Invalid tree: too short', 'arr tree too short lvl 2'],
+      ['tree', {'tree':['array 1 3','tree']}, 'null', 'Invalid tree: null', 'arr tree null'],
 
-      ['tree', {'tree':{'+ sth':['tree','1 3']}}, '{"sth":[{"sth":[]}]}', 'Invalid array: too short', 'obj-arr tree too short'],
+      ['tree', {'tree':{'+ sth':['array 1 3','tree']}}, '{"sth":[{"sth":[]}]}', 'Invalid array: too short', 'obj-arr tree too short'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -160,26 +160,26 @@ describe('custom derived types', () => {
       ['?name', {'name':'string 0 2'}, '"bos"', 'Invalid ?name: too long', 'name bo'],
       ['?user', {'user':{'+ name':'string 0 2'}}, '{}', 'Invalid ?user: missing required field: name', 'user bo'],
       ['?user', {'user':{'+ name':'string 0 2'}}, '{"name":"ass"}', 'Invalid string: too long', 'user bo string too long'],
-      ['?elems', {'elems':['string 0 2', '1 2']}, '[]', 'Invalid ?elems: too short', 'elems too short'],
-      ['?elems', {'elems':['string 0 2', '1 2']}, '["ass"]', 'Invalid string: too long', 'elems string too long'],
+      ['?elems', {'elems':['array 1 2', 'string 0 2']}, '[]', 'Invalid ?elems: too short', 'elems too short'],
+      ['?elems', {'elems':['array 1 2', 'string 0 2']}, '["ass"]', 'Invalid string: too long', 'elems string too long'],
 
       [{'+ bob':'?user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":{"names":"bo"}}', 'Unknown key found: names', 'bob user bo required'],
       [{'+ bob':'?user'}, {'user':{'+ name':'string 0 2'}},
         '{"bob":{"name":"bos"}}', 'Invalid string: too long', 'bob user bo string too long'],
-      [['?elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', '?elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["el"],[]]', 'Invalid array: too long', 'elems array too long'],
-      [['?elems', '0 1'], {'elems':['string 0 2', '0 2']},
+      [['array 0 1', '?elems'], {'elems':['array 0 2', 'string 0 2']},
         '[["els"]]', 'Invalid string: too long', 'elems string too long'],
 
       ['?tree', {'tree':{'+ leaf':'tree'}}, '{"leaf":{}}', 'Invalid tree: missing required field: leaf', 'obj tree missing leaf'],
       ['?tree', {'tree':{'- leaf':'tree'}}, '{"leaf":null}', 'Invalid tree: null', 'obj tree invalid null'],
       ['?tree', {'tree':{'- leaf':'tree','+ a': 'string 2 2'}}, '{"leaf":{"a":"z"}}', 'Invalid string: too short', 'obj tree string too short'],
 
-      ['?tree', {'tree':['tree','1 3']}, '[]', 'Invalid ?tree: too short', 'arr tree too short lvl 1'],
-      ['?tree', {'tree':['tree','1 3']}, '[[]]', 'Invalid tree: too short', 'arr tree too short lvl 2'],
+      ['?tree', {'tree':['array 1 3','tree']}, '[]', 'Invalid ?tree: too short', 'arr tree too short lvl 1'],
+      ['?tree', {'tree':['array 1 3','tree']}, '[[]]', 'Invalid tree: too short', 'arr tree too short lvl 2'],
 
-      ['?tree', {'tree':{'+ sth':['tree','1 3']}}, '{"sth":[{"sth":[]}]}', 'Invalid array: too short', 'obj-arr tree too short'],
+      ['?tree', {'tree':{'+ sth':['array 1 3','tree']}}, '{"sth":[{"sth":[]}]}', 'Invalid array: too short', 'obj-arr tree too short'],
 
     ]
     for (const t of tests) {

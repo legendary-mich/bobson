@@ -170,14 +170,14 @@ describe('object edge cases', () => {
       [{"- olo":"?enum bo"}, '{"olo":null}', {olo: null}, '?enum optional null'],
       [{"+ olo":"?enum bo"}, '{"olo":null}', {olo: null}, '?enum required null'],
 
-      [{"- olo":["string 0 2", "0 2"]}, '{}', {}, 'array optional empty'],
-      [{"- olo":["string 0 2", "0 2"]}, '{"olo":[]}', {olo: []}, 'array optional full'],
-      [{"+ olo":["string 0 2", "0 2"]}, '{"olo":[]}', {olo: []}, 'array required full'],
-      [{"- olo":["?", "string 0 2", "0 2"]}, '{}', {}, '?array optional empty'],
-      [{"- olo":["?", "string 0 2", "0 2"]}, '{"olo":[]}', {olo: []}, '?array optional full'],
-      [{"+ olo":["?", "string 0 2", "0 2"]}, '{"olo":[]}', {olo: []}, '?array required full'],
-      [{"- olo":["?", "string 0 2", "0 2"]}, '{"olo":null}', {olo: null}, '?array optional null'],
-      [{"+ olo":["?", "string 0 2", "0 2"]}, '{"olo":null}', {olo: null}, '?array required null'],
+      [{"- olo":["array 0 2", "string 0 2"]}, '{}', {}, 'array optional empty'],
+      [{"- olo":["array 0 2", "string 0 2"]}, '{"olo":[]}', {olo: []}, 'array optional full'],
+      [{"+ olo":["array 0 2", "string 0 2"]}, '{"olo":[]}', {olo: []}, 'array required full'],
+      [{"- olo":["?array 0 2", "string 0 2"]}, '{}', {}, '?array optional empty'],
+      [{"- olo":["?array 0 2", "string 0 2"]}, '{"olo":[]}', {olo: []}, '?array optional full'],
+      [{"+ olo":["?array 0 2", "string 0 2"]}, '{"olo":[]}', {olo: []}, '?array required full'],
+      [{"- olo":["?array 0 2", "string 0 2"]}, '{"olo":null}', {olo: null}, '?array optional null'],
+      [{"+ olo":["?array 0 2", "string 0 2"]}, '{"olo":null}', {olo: null}, '?array required null'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -186,9 +186,9 @@ describe('object edge cases', () => {
 
   describe('missing a required field with all types', () => {
     const tests = [
-      [{"+ bobo": "string 0 2"}, '{}', 'Invalid object: missing required field: bobo', 'missing bobo'],
-      [{"+ bobo": "enum ac"}, '{}', 'Invalid object: missing required field: bobo', 'missing bobo'],
-      [{"+ bobo": ["string 0 2", "0 2"]}, '{}', 'Invalid object: missing required field: bobo', 'missing bobo'],
+      [{"+ bobo": "string 0 2"}, '{}', 'Invalid object: missing required field: bobo', 'missing bobo 1'],
+      [{"+ bobo": "enum ac"}, '{}', 'Invalid object: missing required field: bobo', 'missing bobo 2'],
+      [{"+ bobo": ["array 0 2", "string 0 2"]}, '{}', 'Invalid object: missing required field: bobo', 'missing bobo 3'],
     ]
     for (const t of tests) {
       run_invalid(t)

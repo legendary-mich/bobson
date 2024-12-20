@@ -54,9 +54,9 @@ describe('query string', () => {
       [{"+ id":"int_4 1 3"}, '/status?id=2', {id:2}, 'id:2'],
       [{"+ id":"int_4 1 3", "+ name":"string 1 3"},
         '/status?id=2&name=ho', {id:2,name:'ho'}, 'id:2 name:ho'],
-      [{"+ arr":["int_4 1 9", "1 3"]},
+      [{"+ arr":["array 1 3", "int_4 1 9"]},
         '/status?arr=2,3,4', {arr:[2,3,4]}, 'arr[2,3,4]'],
-      [{"+ arr":["int_4 1 9", "0 3"]},
+      [{"+ arr":["array 0 3", "int_4 1 9"]},
         '/status?arr=', {arr:[]}, 'arr[]'],
     ]
     for (const t of tests) {

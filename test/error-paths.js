@@ -120,7 +120,7 @@ describe('error-paths in parse', () => {
       'lvl-2 object',
     ],
     [
-      ["string 2 3", "0 10"],
+      ["array 0 10", "string 2 3"],
       'k', {
         message: 'Invalid array opening char. Expected: [, found: k',
         path: 'array',
@@ -128,7 +128,7 @@ describe('error-paths in parse', () => {
       'invalid array opening',
     ],
     [
-      {"+ olo": ["string 2 3", "0 10"]},
+      {"+ olo": ["array 0 10", "string 2 3"]},
       '{"olo":*}', {
         message: 'Invalid array opening char. Expected: [, found: *',
         path: 'object.olo',
@@ -136,7 +136,7 @@ describe('error-paths in parse', () => {
       'invalid array opening in an object',
     ],
     [
-      {"+ ola": ["string 2 3", "0 10"]},
+      {"+ ola": ["array 0 10", "string 2 3"]},
       '{"ola":["al","ba","zo","a","ho"]}', {
         message: 'Invalid string: too short',
         path: 'object.ola[3]',
@@ -144,7 +144,7 @@ describe('error-paths in parse', () => {
       'array in an object',
     ],
     [
-      [["string 0 0", '0 3'], '0 1'],
+      ['array 0 1', ['array 0 3', "string 0 0"]],
       '[["","","a",""]]', {
         message: 'Invalid string: too long',
         path: 'array[0][2]',
@@ -152,7 +152,7 @@ describe('error-paths in parse', () => {
       'lvl-2 array',
     ],
     [
-      [{"+ olo":"string 0 3"}, '0 1'],
+      ['array 0 1', {"+ olo":"string 0 3"}],
       '[{"olo":"bora"}]', {
         message: 'Invalid string: too long',
         path: 'array[0].olo',
@@ -160,7 +160,7 @@ describe('error-paths in parse', () => {
       'object in an array',
     ],
     [
-      [{"+ olo":"string 0 3"}, '0 1'],
+      ['array 0 1', {"+ olo":"string 0 3"}],
       '[{}]', {
         message: 'Invalid object: missing required field: olo',
         path: 'array[0]',
@@ -200,7 +200,7 @@ describe('error-paths in parse_chunk', () => {
       'lvl-2 object',
     ],
     [
-      [["string 0 0", '0 3'], '0 1'],
+      ['array 0 1', ['array 0 3', "string 0 0"]],
       '[["","","a",""]]', {
         message: 'Invalid string: too long',
         path: 'array[0][2]',
@@ -208,7 +208,7 @@ describe('error-paths in parse_chunk', () => {
       'lvl-2 array',
     ],
     [
-      [{"+ olo":"string 0 3"}, '0 1'],
+      ['array 0 1', {"+ olo":"string 0 3"}],
       '[{"olo":"bora"}]', {
         message: 'Invalid string: too long',
         path: 'array[0].olo',
@@ -247,15 +247,15 @@ describe('error-paths in parse_query', () => {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'name=r'],
-    [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, '/status?ids=1,2&name=r', {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, '/status?ids=1,2&name=r', {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'arr name=r'],
-    [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, '/status?ids=1,20&name=r', {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, '/status?ids=1,20&name=r', {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 1'],
-    [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, '/status?name=ra&ids=1,20', {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, '/status?name=ra&ids=1,20', {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 2'],
@@ -283,15 +283,15 @@ describe('error-paths in parse_path_params', () => {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'name=r'],
-    [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, {ids:'1,2',name:'r'}, {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, {ids:'1,2',name:'r'}, {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'arr name=r'],
-    [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, {ids:'1,20',name:'r'}, {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, {ids:'1,20',name:'r'}, {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 1'],
-    [{"+ ids":["int_4 0 9", "0 3"],"+ name":"string 2 3"}, {name:'ra',ids:'1,20'}, {
+    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, {name:'ra',ids:'1,20'}, {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 2'],
@@ -317,23 +317,23 @@ describe('error-paths in schemas', () => {
     }, 'invalid ?'],
     [{
       "+ bobo": [
+        "array 0 2",
         {
           "+ lobo": {
-            "+ zorro": ["string 2", "0 3"],
+            "+ zorro": ["array 0 3", "string 2"],
           },
-        },
-        "0 2"]}, '{na: "r"}', {
+        }]}, '{na: "r"}', {
       message: 'Invalid max_length param for string schema: undefined',
       path: '.+ bobo[.+ lobo.+ zorro[',
     }, 'invalid leaf array'],
     [{
       "+ bobo": [
+        "array -1 2",
         {
           "+ lobo": {
-            "+ zorro": ["string 2 3", "0 3"],
+            "+ zorro": ["array 0 3", "string 2 3"],
           },
-        },
-        "-1 2"]}, '{na: "r"}', {
+        }]}, '{na: "r"}', {
       message: 'Invalid min_length param for array schema: -1',
       path: '.+ bobo',
     }, 'invalid intermediate array'],

@@ -118,25 +118,25 @@ describe('simple cases', () => {
 
   describe('[]', () => {
     it('empty', () => {
-      const p = bobson.get_parser(["string 0 20", "0 1"])
+      const p = bobson.get_parser(["array 0 1", "string 0 20"])
       const result = p.parse('[]')
       deepEq(result, [])
     })
 
     it('null', () => {
-      const p = bobson.get_parser(["?", "string 0 20", "0 1"])
+      const p = bobson.get_parser(["?array 0 1", "string 0 20"])
       const result = p.parse('null')
       deepEq(result, null)
     })
 
     it('full', () => {
-      const p = bobson.get_parser(["string 0 20", "0 2"])
+      const p = bobson.get_parser(["array 0 2", "string 0 20"])
       const result = p.parse('["aba","zozo"]')
       deepEq(result, ['aba', 'zozo'])
     })
 
     it('recursive', () => {
-      const p = bobson.get_parser([["string 0 20", "0 2"], "0 1"])
+      const p = bobson.get_parser(["array 0 1", ["array 0 2", "string 0 20"]])
       const result = p.parse('[["aba","zozo"]]')
       deepEq(result, [['aba', 'zozo']])
     })
@@ -249,7 +249,7 @@ describe('simple cases', () => {
     })
 
     it('array', () => {
-      const schema = ["string 0 20", "0 4"]
+      const schema = ["array 0 4", "string 0 20"]
       const parsers = {
         string: (s) => s.length,
       }

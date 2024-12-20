@@ -45,19 +45,21 @@ describe('schema validation', () => {
 
   describe('array', () => {
     const tests = [
-      [[], 'Unknown schema type: undefined', 'arr no schema'],
-      [['what'], 'Unknown schema type: what', 'arr unknown schema'],
-      [['string 0'], 'Invalid max_length param for string schema: undefined', 'arr invalid child param'],
-      [['string 0 0'], 'Invalid min_length param for array schema: undefined', 'arr missing min_length param'],
-      [['string 0 0', '0'], 'Invalid max_length param for array schema: undefined', 'arr missing max_length param'],
-      [['string 0 0', '-1 0'], 'Invalid min_length param for array schema: -1', 'arr invalid min_length param'],
-      [['string 0 0', '0 -1'], 'Invalid max_length param for array schema: -1', 'arr invalid max_length param'],
-      [['string 0 0', '9007199254740992 0'], 'Invalid min_length param for array schema: 9007199254740992', 'arr min_length > max_max'],
-      [['string 0 0', '0 9007199254740992'], 'Invalid max_length param for array schema: 9007199254740992', 'arr max_length > max_max'],
-      [['string 0 0', '2 1'], 'Invalid max_length param for array schema: 1; max_length < min_length', 'min_length > max_length'],
+      [[], 'Unknown schema type: undefined', 'no type'],
+      [['!array 2 3', 'string 0 0'], 'Unknown schema type: !array 2 3', 'unknown schema !array'],
 
-      [['?', 'string 0 0', '2 1'], 'Invalid max_length param for ?array schema: 1; max_length < min_length', 'min_length > max_length in nullable'],
-      [['!', 'string 0 0', '2 3'], 'Unknown schema type: !', 'unknown schema !'],
+      [['array 0 0'], 'Unknown schema type: undefined', 'arr no schema'],
+      [['array 0 0', 'what'], 'Unknown schema type: what', 'arr unknown schema'],
+      [['array 0 0', 'string 0'], 'Invalid max_length param for string schema: undefined', 'arr invalid child param'],
+      [['array', 'string 0 0'], 'Invalid min_length param for array schema: undefined', 'arr missing min_length param'],
+      [['array 0', 'string 0 0'], 'Invalid max_length param for array schema: undefined', 'arr missing max_length param'],
+      [['array -1 0', 'string 0 0'], 'Invalid min_length param for array schema: -1', 'arr invalid min_length param'],
+      [['array 0 -1', 'string 0 0'], 'Invalid max_length param for array schema: -1', 'arr invalid max_length param'],
+      [['array 9007199254740992 0', 'string 0 0'], 'Invalid min_length param for array schema: 9007199254740992', 'arr min_length > max_max'],
+      [['array 0 9007199254740992', 'string 0 0'], 'Invalid max_length param for array schema: 9007199254740992', 'arr max_length > max_max'],
+      [['array 2 1', 'string 0 0'], 'Invalid max_length param for array schema: 1; max_length < min_length', 'min_length > max_length'],
+
+      [['?array 2 1', 'string 0 0'], 'Invalid max_length param for ?array schema: 1; max_length < min_length', 'min_length > max_length in nullable'],
     ]
     for (const t of tests) {
       run_invalid(t)

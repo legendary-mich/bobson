@@ -178,16 +178,16 @@ describe('custom string parsers', () => {
   describe('string in an array', () => {
     describe('array valid', () => {
       const tests = [
-        [['string 1 2', '0 0'], '[]', [], '0 0 empty'],
-        [['string 1 2', '0 1'], '[]', [], '0 1 empty'],
-        [['string 1 2', '1 1'], '["a"]', [1], '1 1 a'],
-        [['string 1 2', '0 1'], '["a"]', [1], '0 1 a'],
-        [['string 1 2', '1 2'], '["a"]', [1], '1 2 a'],
-        [['string 1 2', '0 2'], '["a"]', [1], '0 2 a'],
-        [['string 1 2', '2 2'], '["b","cc"]', [1,2], '2 2 bc'],
-        [['string 1 2', '1 2'], '["b","cc"]', [1,2], '1 2 bc'],
-        [['string 1 2', '2 3'], '["b","cc"]', [1,2], '2 3 bc'],
-        [['string 1 2', '1 3'], '["b","cc"]', [1,2], '1 3 bc'],
+        [['array 0 0', 'string 1 2'], '[]', [], '0 0 empty'],
+        [['array 0 1', 'string 1 2'], '[]', [], '0 1 empty'],
+        [['array 1 1', 'string 1 2'], '["a"]', [1], '1 1 a'],
+        [['array 0 1', 'string 1 2'], '["a"]', [1], '0 1 a'],
+        [['array 1 2', 'string 1 2'], '["a"]', [1], '1 2 a'],
+        [['array 0 2', 'string 1 2'], '["a"]', [1], '0 2 a'],
+        [['array 2 2', 'string 1 2'], '["b","cc"]', [1,2], '2 2 bc'],
+        [['array 1 2', 'string 1 2'], '["b","cc"]', [1,2], '1 2 bc'],
+        [['array 2 3', 'string 1 2'], '["b","cc"]', [1,2], '2 3 bc'],
+        [['array 1 3', 'string 1 2'], '["b","cc"]', [1,2], '1 3 bc'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -196,21 +196,21 @@ describe('custom string parsers', () => {
 
     describe('?array valid', () => {
       const tests = [
-        [['?', 'string 1 2', '0 0'], '[]', [], '0 0 empty'],
-        [['?', 'string 1 2', '0 1'], '[]', [], '0 1 empty'],
-        [['?', 'string 1 2', '1 1'], '["a"]', [1], '1 1 a'],
-        [['?', 'string 1 2', '0 1'], '["a"]', [1], '0 1 a'],
-        [['?', 'string 1 2', '1 2'], '["a"]', [1], '1 2 a'],
-        [['?', 'string 1 2', '0 2'], '["a"]', [1], '0 2 a'],
-        [['?', 'string 1 2', '2 2'], '["bb","c"]', [2,1], '2 2 bc'],
-        [['?', 'string 1 2', '1 2'], '["bb","c"]', [2,1], '1 2 bc'],
-        [['?', 'string 1 2', '2 3'], '["bb","c"]', [2,1], '2 3 bc'],
-        [['?', 'string 1 2', '1 3'], '["bb","c"]', [2,1], '1 3 bc'],
+        [['?array 0 0', 'string 1 2'], '[]', [], '0 0 empty'],
+        [['?array 0 1', 'string 1 2'], '[]', [], '0 1 empty'],
+        [['?array 1 1', 'string 1 2'], '["a"]', [1], '1 1 a'],
+        [['?array 0 1', 'string 1 2'], '["a"]', [1], '0 1 a'],
+        [['?array 1 2', 'string 1 2'], '["a"]', [1], '1 2 a'],
+        [['?array 0 2', 'string 1 2'], '["a"]', [1], '0 2 a'],
+        [['?array 2 2', 'string 1 2'], '["bb","c"]', [2,1], '2 2 bc'],
+        [['?array 1 2', 'string 1 2'], '["bb","c"]', [2,1], '1 2 bc'],
+        [['?array 2 3', 'string 1 2'], '["bb","c"]', [2,1], '2 3 bc'],
+        [['?array 1 3', 'string 1 2'], '["bb","c"]', [2,1], '1 3 bc'],
 
-        [['?', 'string 1 2', '0 0'], 'null', null, '0 0 null'],
-        [['?', 'string 1 2', '0 1'], 'null', null, '0 1 null'],
-        [['?', 'string 1 2', '5 5'], 'null', null, '5 5 null'],
-        [['?', 'string 1 2', '5 6'], 'null', null, '5 6 null'],
+        [['?array 0 0', 'string 1 2'], 'null', null, '0 0 null'],
+        [['?array 0 1', 'string 1 2'], 'null', null, '0 1 null'],
+        [['?array 5 5', 'string 1 2'], 'null', null, '5 5 null'],
+        [['?array 5 6', 'string 1 2'], 'null', null, '5 6 null'],
       ]
       for (const t of tests) {
         run_valid(t)

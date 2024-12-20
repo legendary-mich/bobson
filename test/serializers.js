@@ -46,8 +46,8 @@ describe('serializers', () => {
       ["bool", false, '"false"', 'bool false'],
       [{"+ bob":"string 0 10"}, {bob:'don'}, '{"bob":"don"}', 'obj bob'],
       [{"+ bob":"string 0 10","+ hop":"string 0 10"}, {bob:'don',hop:'lo'}, '{"bob":"don","hop":"lo"}', 'obj bob hop'],
-      [["string 0 10", "0 10"], ['don'], '["don"]', 'arr don'],
-      [["string 0 10", "0 10"], ['don','olk'], '["don","olk"]', 'arr don olk'],
+      [["array 0 10", "string 0 10"], ['don'], '["don"]', 'arr don'],
+      [["array 0 10", "string 0 10"], ['don','olk'], '["don","olk"]', 'arr don olk'],
 
       ["?string 0 10", 'ho', '"ho"', '?string 0 10'],
       ["?string 0 10", 'h"o', '"h\\"o"', '?string 0 10 h"o'],
@@ -62,7 +62,7 @@ describe('serializers', () => {
       ["?bool", true, '"true"', '?bool true'],
       ["?bool", false, '"false"', '?bool false'],
       [{"?":true,"+ bob":"string 0 10"}, {bob:'don'}, '{"bob":"don"}', '?obj bob'],
-      [["?","string 0 10", "0 10"], ['don','olk'], '["don","olk"]', '?arr don olk'],
+      [["?array 0 10", "string 0 10"], ['don','olk'], '["don","olk"]', '?arr don olk'],
 
       ["?string 0 10", null, null, '?string null'],
       ["?int_4 0 10", null, null, '?int_4 null'],
@@ -73,7 +73,7 @@ describe('serializers', () => {
       ["?enum olo", null, null, '?enum null'],
       ["?bool", null, null, '?bool null'],
       [{"?":true,"+ bob":"string 0 10"}, null, null, '?obj null'],
-      [["?","string 0 10", "0 10"], null, null, '?arr null'],
+      [["?array 0 10", "string 0 10"], null, null, '?arr null'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -156,15 +156,15 @@ describe('serializers', () => {
       deepEq(result, null)
 
       // array =================================================================
-      schema = builder.get_serializer(["string 0 1", "0 1"])
+      schema = builder.get_serializer(["array 0 1", "string 0 1"])
       result = schema.serialize([])
       deepEq(result, {lobo:'lo'})
 
-      schema = builder.get_serializer(["?", "string 0 1", "0 1"])
+      schema = builder.get_serializer(["?array 0 1", "string 0 1"])
       result = schema.serialize([])
       deepEq(result, {lobo:'lo'})
 
-      schema = builder.get_serializer(["?", "string 0 1", "0 1"])
+      schema = builder.get_serializer(["?array 0 1", "string 0 1"])
       result = schema.serialize(null)
       deepEq(result, null)
 
