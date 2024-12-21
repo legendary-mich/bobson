@@ -29,14 +29,25 @@ describe('schema validation', () => {
     }
   })
 
+  describe('complex type', () => {
+    const tests = [
+      [[], 'Unknown schema type: undefined', 'no type'],
+      [["what"], 'Unknown schema type: what', 'unknown what'],
+      [["=array"], 'Unknown schema type: =array', 'unknown =array'],
+    ]
+    for (const t of tests) {
+      run_invalid(t)
+    }
+  })
+
   describe('object', () => {
     const tests = [
-      [{"z bo":"what"}, 'Invalid prefix. Expected: (+/-) bo, found: (z) bo', 'invalid prefix'],
-      [{"+ bo":"what"}, 'Unknown schema type: what', 'obj unknown what'],
-      [{"+ bo":true}, 'Unknown schema type: Boolean', 'obj unknown true'],
-      [{"+ bo":"string"}, 'Invalid min_length param for string schema: undefined', 'obj invalid string param'],
-      [{"?":"string"}, 'Invalid Type. Expected: boolean, found: String', 'obj invalid ? param'],
-      [{"+ al":"string 0 1","- al":"int_4 0 1"}, 'Duplicate key found: al', 'duplicate key'],
+      [["object"], 'Invalid Type. Expected: object, found: undefined', 'invalid object'],
+      [["object",{"z bo":"what"}], 'Invalid prefix. Expected: (+/-) bo, found: (z) bo', 'invalid prefix'],
+      [["object",{"+ bo":"what"}], 'Unknown schema type: what', 'obj unknown what'],
+      [["object",{"+ bo":true}], 'Unknown schema type: Boolean', 'obj unknown true'],
+      [["object",{"+ bo":"string"}], 'Invalid min_length param for string schema: undefined', 'obj invalid string param'],
+      [["object",{"+ al":"string 0 1","- al":"int_4 0 1"}], 'Duplicate key found: al', 'duplicate key'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -45,7 +56,6 @@ describe('schema validation', () => {
 
   describe('array', () => {
     const tests = [
-      [[], 'Unknown schema type: undefined', 'no type'],
       [['!array 2 3', 'string 0 0'], 'Unknown schema type: !array 2 3', 'unknown schema !array'],
 
       [['array 0 0'], 'Unknown schema type: undefined', 'arr no schema'],
@@ -154,12 +164,12 @@ describe('schema validation', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
-          "user": {
+          "user": ["object",{
             "- name": "string 1 10",
-          },
-          "employee": {
+          }],
+          "employee": ["object",{
             "< koko": [],
-          },
+          }],
         })
         throw new Error('should have thrown')
       }
@@ -173,9 +183,9 @@ describe('schema validation', () => {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
           "user": "string 0 20",
-          "employee": {
+          "employee": ["object",{
             "< user": [],
-          },
+          }],
         })
         throw new Error('should have thrown')
       }
@@ -188,12 +198,12 @@ describe('schema validation', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
-          "user": {
+          "user": ["object",{
             "- name": "string 1 10",
-          },
-          "employee": {
+          }],
+          "employee": ["object",{
             "< user": {},
-          },
+          }],
         })
         throw new Error('should have thrown')
       }
@@ -206,12 +216,12 @@ describe('schema validation', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
-          "user": {
+          "user": ["object",{
             "- name": "string 1 10",
-          },
-          "employee": {
+          }],
+          "employee": ["object",{
             "< user": ["o name"],
-          },
+          }],
         })
         throw new Error('should have thrown')
       }
@@ -224,13 +234,13 @@ describe('schema validation', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
-          "user": {
+          "user": ["object",{
             "- name": "string 1 10",
-          },
-          "employee": {
+          }],
+          "employee": ["object",{
             "+ name": "string 1 10",
             "< user": ["+ name"],
-          },
+          }],
         })
         throw new Error('should have thrown')
       }
@@ -243,13 +253,13 @@ describe('schema validation', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
-          "user": {
+          "user": ["object",{
             "- name": "string 1 10",
-          },
-          "employee": {
+          }],
+          "employee": ["object",{
             "+ name": "string 1 10",
             "< user": ["- name"],
-          },
+          }],
         })
         throw new Error('should have thrown')
       }
@@ -262,13 +272,13 @@ describe('schema validation', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_types({
-          "user": {
+          "user": ["object",{
             "- name": "string 1 10",
-          },
-          "employee": {
+          }],
+          "employee": ["object",{
             "+ name": "string 1 10",
             "< user": ["+ what"],
-          },
+          }],
         })
         throw new Error('should have thrown')
       }

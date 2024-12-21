@@ -11,101 +11,106 @@ describe('real life example', () => {
       "date_time": "string 24 24 ^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
       "page_number": "int_4 1 max",
       "search_term": "string 0 256",
-      "int_4_id_params": {
+      "int_4_id_params": ["object",{
         "+ id": "int_4_id",
-      },
+      }],
     }
 
     const auth_defs = {
       "username": "string 5 64 ^\\S.*\\S$",
       "password": "string 8 64 ^\\S.*\\S$",
       "email": "string 0 256 ^\\S+@\\S+\\.\\S{2,}$",
-      "credentials": {
+      "credentials": ["object",{
         "+ username": "username",
         "+ password": "password",
-      },
-      "credentials_change": {
+      }],
+      "credentials_change": ["object",{
         "+ username": "username",
         "+ old_password": "password",
         "+ new_password": "password",
-      },
-      "credentials_with_captcha": {
+      }],
+      "credentials_with_captcha": ["object",{
         "< credentials": ["+ username", "+ password"],
         "+ captcha_token": "string 1 2048",
-      },
-      "post_password": {
+      }],
+      "post_password": ["object",{
         "+ body": "credentials_change",
-      },
-      "post_signup": {
+      }],
+      "post_signup": ["object",{
         "+ body": "credentials_with_captcha",
-      },
-      "post_login": {
+      }],
+      "post_login": ["object",{
         "+ body": "credentials",
-      },
-      "post_google_login": {
-        "+ body": {
+      }],
+      "post_google_login": ["object",{
+        "+ body": ["object",{
           "+ credential": "string 1 2048",
-        },
-      },
-      "post_email_verify": {
-        "+ body": {
+        }],
+      }],
+      "post_email_verify": ["object",{
+        "+ body": ["object",{
           "+ nonce": "string 1 64",
-        },
-      },
-      "post_email": {
-        "+ body": {
+        }],
+      }],
+      "post_email": ["object",{
+        "+ body": ["object",{
           "+ email": "email",
-        },
-      },
+        }],
+      }],
     }
 
     const user_defs = {
-      "user": {
+      "user": ["object",{
         "- id": "int_4_id",
         "- username": "username",
         "+ is_active": "bool",
         "- created_at": "date_time",
         "- updated_at": "?date_time",
         "- last_seen_at": "?date_time",
-      },
-      "user_query": {
+      }],
+      "user_query": ["object",{
         "+ page": "page_number",
         "- search": "search_term",
-      },
-      "get_user": {
+      }],
+      "get_user": ["object",{
         "+ query": "user_query",
-      },
-      "post_user": {
+      }],
+      "post_user": ["object",{
         "+ body": "credentials",
-      },
-      "put_user": {
+      }],
+      "put_user": ["object",{
         "+ params": "int_4_id_params",
         "+ body": "user",
-      },
-      "del_user": {
+      }],
+      "del_user": ["object",{
         "+ params": "int_4_id_params",
-      },
+      }],
     }
 
     const image_defs = {
-      "images_query": {
+      "images_query": ["object",{
         "+ page": "page_number",
-      },
-      "get_image": {
+      }],
+      "get_image": ["object",{
         "+ params": "int_4_id_params",
-      },
-      "put_image": {
+      }],
+      "put_image": ["object",{
         "+ params": "int_4_id_params",
-      },
-      "del_image": {
+      }],
+      "del_image": ["object",{
         "+ params": "int_4_id_params",
-      },
-      "get_images": {
+      }],
+      "get_images": ["object",{
         "+ query": "images_query",
-      },
+      }],
     }
 
-    const definitions = {...common_defs, ...auth_defs, ...user_defs, ...image_defs}
+    const definitions = {
+      ...common_defs,
+      ...auth_defs,
+      ...user_defs,
+      ...image_defs,
+    }
     try {
       const bobson = new Bobson_Builder()
       // bobson.add_base_types(base_types)

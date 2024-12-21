@@ -4,10 +4,10 @@ const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
 bobson.add_derived_types({
-  'custom_obj': {
+  'custom_obj': ["object", {
     '+ id': 'int_js 0 100',
     '+ name': 'string 1 3',
-  },
+  }],
 })
 
 function run_valid(t) {
@@ -34,22 +34,22 @@ describe('flat pairs parser', () => {
 
   describe('valid', () => {
     const tests = [
-      [{}, [], {}, 'empty'],
-      [{"+ name":"string 0 10"}, [['name', '']], {name:''}, 'name empty'],
-      [{"+ name":"string 1 10"}, [['name', 'ryan']], {name:'ryan'}, 'name=ryan'],
-      [{"- name":"string 1 10"}, [['name', 'ryan']], {name:'ryan'}, 'optional present'],
-      [{"- name":"string 1 10"}, [], {}, 'optional missing'],
-      [{"+ name":"string 1 10"}, [['name', 'r n']], {name:'r n'}, 'name=r n'],
-      [{"+ n e":"string 1 10"}, [['n e', 'ryan']], {"n e":'ryan'}, '"n e"=ryan'],
-      [{"+ n=e":"string 1 10", "+ n?e":"string 1 10"},
+      [["object",{}], [], {}, 'empty'],
+      [["object",{"+ name":"string 0 10"}], [['name', '']], {name:''}, 'name empty'],
+      [["object",{"+ name":"string 1 10"}], [['name', 'ryan']], {name:'ryan'}, 'name=ryan'],
+      [["object",{"- name":"string 1 10"}], [['name', 'ryan']], {name:'ryan'}, 'optional present'],
+      [["object",{"- name":"string 1 10"}], [], {}, 'optional missing'],
+      [["object",{"+ name":"string 1 10"}], [['name', 'r n']], {name:'r n'}, 'name=r n'],
+      [["object",{"+ n e":"string 1 10"}], [['n e', 'ryan']], {"n e":'ryan'}, '"n e"=ryan'],
+      [["object",{"+ n=e":"string 1 10", "+ n?e":"string 1 10"}],
         [['n=e', 'r=n'], ['n?e', 'r?n']], {"n=e":'r=n',"n?e":'r?n'}, 'n=e r=n n?e r?n'],
 
-      [{"+ id":"int_4 1 3"}, [['id', '2']], {id:2}, 'id:2'],
-      [{"+ id":"int_4 1 3", "+ name":"string 1 3"},
+      [["object",{"+ id":"int_4 1 3"}], [['id', '2']], {id:2}, 'id:2'],
+      [["object",{"+ id":"int_4 1 3", "+ name":"string 1 3"}],
         [['id', '2'], ['name', 'ho']], {id:2,name:'ho'}, 'id:2 name:ho'],
-      [{"+ arr":["array 1 3", "int_4 1 9"]},
+      [["object",{"+ arr":["array 1 3", "int_4 1 9"]}],
         [['arr', '2,3,4']], {arr:[2,3,4]}, 'arr[2,3,4]'],
-      [{"+ arr":["array 0 3", "int_4 1 9"]},
+      [["object",{"+ arr":["array 0 3", "int_4 1 9"]}],
         [['arr', '']], {arr:[]}, 'arr[]'],
     ]
     for (const t of tests) {
@@ -60,19 +60,19 @@ describe('flat pairs parser', () => {
   describe('invalid', () => {
     const tests = [
       [undefined, [['name', 'a']], 'Unknown schema type: undefined', 'undefined schema'],
-      [{"+ name":"int_4 0 2"}, undefined, 'Invalid Type. Expected: array, found: undefined', 'undefined array'],
-      [{"+ name":"int_4 0 2"}, [], 'Invalid object: missing required field: name', 'missing required'],
-      [{"+ name":"int_4 0 2"}, [[]], 'Unknown key found: undefined', 'missing key'],
-      [{"+ name":"int_4 0 2"}, [['name']], 'Invalid Type. Expected: string, found: undefined', 'missing value'],
-      [{"+ name":"int_4 0 2"}, [['name', {}]], 'Invalid Type. Expected: string, found: Object', 'invalid value type'],
-      [{"+ name":"int_4 0 2"}, [['name', '']], 'Invalid int_4: does not match regex', 'empty value'],
-      [{"+ name":"int_4 0 2"}, [['ha', 'na']], 'Unknown key found: ha', 'unknown memb-name'],
-      [{"+ name":"int_4 0 2","+ ha": "string 1 10"}, [['ha', 'a']], 'Invalid object: missing required field: name', 'mssing required memb'],
+      [["object",{"+ name":"int_4 0 2"}], undefined, 'Invalid Type. Expected: array, found: undefined', 'undefined array'],
+      [["object",{"+ name":"int_4 0 2"}], [], 'Invalid object: missing required field: name', 'missing required'],
+      [["object",{"+ name":"int_4 0 2"}], [[]], 'Unknown key found: undefined', 'missing key'],
+      [["object",{"+ name":"int_4 0 2"}], [['name']], 'Invalid Type. Expected: string, found: undefined', 'missing value'],
+      [["object",{"+ name":"int_4 0 2"}], [['name', {}]], 'Invalid Type. Expected: string, found: Object', 'invalid value type'],
+      [["object",{"+ name":"int_4 0 2"}], [['name', '']], 'Invalid int_4: does not match regex', 'empty value'],
+      [["object",{"+ name":"int_4 0 2"}], [['ha', 'na']], 'Unknown key found: ha', 'unknown memb-name'],
+      [["object",{"+ name":"int_4 0 2","+ ha": "string 1 10"}], [['ha', 'a']], 'Invalid object: missing required field: name', 'mssing required memb'],
 
-      [{"+ name":"string 2 3"}, [['name', 'r']], 'Invalid string: too short', 'str too short'],
-      [{"+ name":"string 2 3"}, [['name', 'rasd']], 'Invalid string: too long', 'str too long'],
-      [{"+ name":"enum aba"}, [['name', 'ras']], 'Invalid enum: ras', 'enum unknown'],
-      [{"+ name":"int_4 0 2"}, [['name', '3']], 'Invalid int_4: too big', 'int_4 too big'],
+      [["object",{"+ name":"string 2 3"}], [['name', 'r']], 'Invalid string: too short', 'str too short'],
+      [["object",{"+ name":"string 2 3"}], [['name', 'rasd']], 'Invalid string: too long', 'str too long'],
+      [["object",{"+ name":"enum aba"}], [['name', 'ras']], 'Invalid enum: ras', 'enum unknown'],
+      [["object",{"+ name":"int_4 0 2"}], [['name', '3']], 'Invalid int_4: too big', 'int_4 too big'],
       ['custom_obj', [['name', 'bo'],['name', 'ro'], ['id', '2']], 'Duplicate key found: name', 'duplicate key'],
 
       // Testing for obj_schema.reset(); A valid case is followed by an invalid one.

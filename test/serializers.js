@@ -44,8 +44,8 @@ describe('serializers', () => {
       ["enum olo", 'olo', '"olo"', 'enum olo'],
       ["bool", true, '"true"', 'bool true'],
       ["bool", false, '"false"', 'bool false'],
-      [{"+ bob":"string 0 10"}, {bob:'don'}, '{"bob":"don"}', 'obj bob'],
-      [{"+ bob":"string 0 10","+ hop":"string 0 10"}, {bob:'don',hop:'lo'}, '{"bob":"don","hop":"lo"}', 'obj bob hop'],
+      [["object",{"+ bob":"string 0 10"}], {bob:'don'}, '{"bob":"don"}', 'obj bob'],
+      [["object",{"+ bob":"string 0 10","+ hop":"string 0 10"}], {bob:'don',hop:'lo'}, '{"bob":"don","hop":"lo"}', 'obj bob hop'],
       [["array 0 10", "string 0 10"], ['don'], '["don"]', 'arr don'],
       [["array 0 10", "string 0 10"], ['don','olk'], '["don","olk"]', 'arr don olk'],
 
@@ -61,7 +61,7 @@ describe('serializers', () => {
       ["?enum olo", 'olo', '"olo"', '?enum olo'],
       ["?bool", true, '"true"', '?bool true'],
       ["?bool", false, '"false"', '?bool false'],
-      [{"?":true,"+ bob":"string 0 10"}, {bob:'don'}, '{"bob":"don"}', '?obj bob'],
+      [["?object",{"+ bob":"string 0 10"}], {bob:'don'}, '{"bob":"don"}', '?obj bob'],
       [["?array 0 10", "string 0 10"], ['don','olk'], '["don","olk"]', '?arr don olk'],
 
       ["?string 0 10", null, null, '?string null'],
@@ -72,7 +72,7 @@ describe('serializers', () => {
       ["?decimal 0.00 10.00", null, null, '?decimal null'],
       ["?enum olo", null, null, '?enum null'],
       ["?bool", null, null, '?bool null'],
-      [{"?":true,"+ bob":"string 0 10"}, null, null, '?obj null'],
+      [["?object",{"+ bob":"string 0 10"}], null, null, '?obj null'],
       [["?array 0 10", "string 0 10"], null, null, '?arr null'],
     ]
     for (const t of tests) {
@@ -143,15 +143,15 @@ describe('serializers', () => {
       deepEq(result, null)
 
       // object ================================================================
-      schema = builder.get_serializer({})
+      schema = builder.get_serializer(["object",{}])
       result = schema.serialize({})
       deepEq(result, 223)
 
-      schema = builder.get_serializer({"?":true})
+      schema = builder.get_serializer(["?object",{}])
       result = schema.serialize({})
       deepEq(result, 223)
 
-      schema = builder.get_serializer({"?":true})
+      schema = builder.get_serializer(["?object",{}])
       result = schema.serialize(null)
       deepEq(result, null)
 

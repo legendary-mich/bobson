@@ -31,13 +31,13 @@ describe('custom object parsers', () => {
   describe('top-level-object', () => {
     describe('object valid', () => {
       const tests = [
-        [{"- bob": "string 0 2"}, '{}', 0, 'optional empty'],
-        [{"- bob": "string 0 2"}, '{"bob":"lo"}', 1, 'optional 1 field'],
-        [{"+ bob": "string 0 2"}, '{"bob":"lo"}', 1, 'required 1 field'],
-        [{"+ bob": "string 0 2","+ lob": "string 0 2"}, '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
+        [["object",{"- bob": "string 0 2"}], '{}', 0, 'optional empty'],
+        [["object",{"- bob": "string 0 2"}], '{"bob":"lo"}', 1, 'optional 1 field'],
+        [["object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', 1, 'required 1 field'],
+        [["object",{"+ bob": "string 0 2","+ lob": "string 0 2"},"tcejbo"], '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
 
-        [{"- bob": {"- lo":"string 0 2"}}, '{}', 0, 'recursive empty'],
-        [{"- bob": {"- lo":"string 0 2"}}, '{"bob":{}}', 1, 'recursive 1 field'],
+        [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{}', 0, 'recursive empty'],
+        [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{"bob":{}}', 1, 'recursive 1 field'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -46,12 +46,12 @@ describe('custom object parsers', () => {
 
     describe('?object valid', () => {
       const tests = [
-        [{"?":true,"- bob": "string 0 2"}, '{}', 0, 'optional empty'],
-        [{"?":true,"- bob": "string 0 2"}, '{"bob":"lo"}', 1, 'optional 1 field'],
-        [{"?":true,"+ bob": "string 0 2"}, '{"bob":"lo"}', 1, 'required 1 field'],
-        [{"?":true,"+ bob": "string 0 2","+ lob": "string 0 2"}, '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
+        [["?object",{"- bob": "string 0 2"}], '{}', 0, 'optional empty'],
+        [["?object",{"- bob": "string 0 2"}], '{"bob":"lo"}', 1, 'optional 1 field'],
+        [["?object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', 1, 'required 1 field'],
+        [["?object",{"+ bob": "string 0 2","+ lob": "string 0 2"}], '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
 
-        [{"?":true,"- bob": "string 0 2"}, 'null', null, 'null'],
+        [["?object",{"- bob": "string 0 2"}], 'null', null, 'null'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -60,9 +60,9 @@ describe('custom object parsers', () => {
 
     describe('object missing required', () => {
       const tests = [
-        [{"+ bob": "string 0 2"}, '{}', 'Invalid object: missing required field: bob', 'required 1 field'],
-        [{"+ bob": {"+ lo":"string 0 2"}}, '{}', 'Invalid object: missing required field: bob', 'recursive 1st level'],
-        [{"+ bob": {"+ lo":"string 0 2"}}, '{"bob":{}}', 'Invalid object: missing required field: lo', 'recursive 2nd level'],
+        [["object",{"+ bob": "string 0 2"}], '{}', 'Invalid object: missing required field: bob', 'required 1 field'],
+        [["object",{"+ bob": ["object",{"+ lo":"string 0 2"}]}], '{}', 'Invalid object: missing required field: bob', 'recursive 1st level'],
+        [["object",{"+ bob": ["object",{"+ lo":"string 0 2"}]}], '{"bob":{}}', 'Invalid object: missing required field: lo', 'recursive 2nd level'],
       ]
       for (const t of tests) {
         run_invalid(t)
@@ -71,7 +71,7 @@ describe('custom object parsers', () => {
 
     describe('?object missing required', () => {
       const tests = [
-        [{"?":true,"+ bob": "string 0 2"}, '{}', 'Invalid ?object: missing required field: bob', 'required 1 field'],
+        [["?object",{"+ bob": "string 0 2"}], '{}', 'Invalid ?object: missing required field: bob', 'required 1 field'],
       ]
       for (const t of tests) {
         run_invalid(t)
@@ -80,7 +80,7 @@ describe('custom object parsers', () => {
 
     describe('non-nullable null', () => {
       const tests = [
-        [{"- bob": "string 0 2"}, 'null', 'Invalid object: null', 'null'],
+        [["object",{"- bob": "string 0 2"}], 'null', 'Invalid object: null', 'null'],
       ]
       for (const t of tests) {
         run_invalid(t)

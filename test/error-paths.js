@@ -4,10 +4,10 @@ const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
 bobson.add_derived_types({
-  'custom_obj': {
+  'custom_obj': ["object", {
     '+ id': 'int_js 0 100',
     '+ name': 'string 1 10',
-  },
+  }],
   'custom_alias': 'custom_obj',
 })
 
@@ -52,7 +52,7 @@ function run_invalid_parse_flat_pairs(t) {
 describe('error-paths in parse', () => {
   const tests = [
     [
-      {},
+      ["object",{}],
       '{"aba":"a"}', {
         message: 'Unknown key found: aba',
         path: 'object',
@@ -60,7 +60,7 @@ describe('error-paths in parse', () => {
       'unknown field',
     ],
     [
-      {},
+      ["object",{}],
       '{', {
         message: 'Incomplete payload. Some characters are missing at the end',
         path: 'object',
@@ -68,7 +68,7 @@ describe('error-paths in parse', () => {
       'no enclosing char',
     ],
     [
-      {},
+      ["object",{}],
       '{}lksd', {
         message: 'Parser has already finished. There are redundant characters after the enclosing char',
         path: '',
@@ -76,7 +76,7 @@ describe('error-paths in parse', () => {
       'after enclosing char',
     ],
     [
-      {"+ aba": "string 0 3"},
+      ["object",{"+ aba": "string 0 3"}],
       '{}', {
         message: 'Invalid object: missing required field: aba',
         path: 'object',
@@ -84,7 +84,7 @@ describe('error-paths in parse', () => {
       'missing required',
     ],
     [
-      {"+ aba": "string 0 3"},
+      ["object",{"+ aba": "string 0 3"}],
       '{"aba"}', {
         message: 'Invalid object member-colon. Expected: :, found: }',
         path: 'object.aba',
@@ -92,7 +92,7 @@ describe('error-paths in parse', () => {
       'invalid colon',
     ],
     [
-      {"+ aba": "string 0 3"},
+      ["object",{"+ aba": "string 0 3"}],
       '{"aba":}', {
         message: 'Invalid string opening char. Expected: ", found: }',
         path: 'object.aba',
@@ -100,7 +100,7 @@ describe('error-paths in parse', () => {
       'no value',
     ],
     [
-      {"+ ola": {"+ aba": "string 0 0"}},
+      ["object",{"+ ola": ["object",{"+ aba": "string 0 0"}]}],
       '{"ola":{"aba":"a"}}', {
         message: 'Invalid string: too long',
         path: 'object.ola.aba',
@@ -116,7 +116,7 @@ describe('error-paths in parse', () => {
       'invalid array opening',
     ],
     [
-      {"+ olo": ["array 0 10", "string 2 3"]},
+      ["object",{"+ olo": ["array 0 10", "string 2 3"]}],
       '{"olo":*}', {
         message: 'Invalid array opening char. Expected: [, found: *',
         path: 'object.olo',
@@ -124,7 +124,7 @@ describe('error-paths in parse', () => {
       'invalid array opening in an object',
     ],
     [
-      {"+ ola": ["array 0 10", "string 2 3"]},
+      ["object",{"+ ola": ["array 0 10", "string 2 3"]}],
       '{"ola":["al","ba","zo","a","ho"]}', {
         message: 'Invalid string: too short',
         path: 'object.ola[3]',
@@ -140,7 +140,7 @@ describe('error-paths in parse', () => {
       'lvl-2 array',
     ],
     [
-      ['array 0 1', {"+ olo":"string 0 3"}],
+      ['array 0 1', ["object",{"+ olo":"string 0 3"}]],
       '[{"olo":"bora"}]', {
         message: 'Invalid string: too long',
         path: 'array[0].olo',
@@ -148,7 +148,7 @@ describe('error-paths in parse', () => {
       'object in an array',
     ],
     [
-      ['array 0 1', {"+ olo":"string 0 3"}],
+      ['array 0 1', ["object",{"+ olo":"string 0 3"}]],
       '[{}]', {
         message: 'Invalid object: missing required field: olo',
         path: 'array[0]',
@@ -180,7 +180,7 @@ describe('error-paths in parse', () => {
 describe('error-paths in parse_chunk', () => {
   const tests = [
     [
-      {"+ ola": {"+ aba": "string 0 0"}},
+      ["object",{"+ ola": ["object",{"+ aba": "string 0 0"}]}],
       '{"ola":{"aba":"a"}}', {
         message: 'Invalid string: too long',
         path: 'object.ola.aba',
@@ -196,7 +196,7 @@ describe('error-paths in parse_chunk', () => {
       'lvl-2 array',
     ],
     [
-      ['array 0 1', {"+ olo":"string 0 3"}],
+      ['array 0 1', ["object",{"+ olo":"string 0 3"}]],
       '[{"olo":"bora"}]', {
         message: 'Invalid string: too long',
         path: 'array[0].olo',
@@ -227,31 +227,31 @@ describe('error-paths in parse_chunk', () => {
 
 describe('error-paths in parse_flat_pairs', () => {
   const tests = [
-    [{"+ name":"string 2 3"}, [[]], {
+    [["object",{"+ name":"string 2 3"}], [[]], {
       message: 'Unknown key found: undefined',
       path: 'object',
     }, 'no key'],
-    [{"+ name":"string 2 3"}, [['name']], {
+    [["object",{"+ name":"string 2 3"}], [['name']], {
       message: 'Invalid Type. Expected: string, found: undefined',
       path: 'object.name',
     }, 'no value'],
-    [{"+ name":"string 2 3"}, [['na', 'r']], {
+    [["object",{"+ name":"string 2 3"}], [['na', 'r']], {
       message: 'Unknown key found: na',
       path: 'object',
     }, 'na=r'],
-    [{"+ name":"string 2 3"}, [['name', 'r']], {
+    [["object",{"+ name":"string 2 3"}], [['name', 'r']], {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'name=r'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, [['ids', '1,2'],['name','r']], {
+    [["object",{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}], [['ids', '1,2'],['name','r']], {
       message: 'Invalid string: too short',
       path: 'object.name',
     }, 'arr name=r'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, [['ids','1,20'],['name','r']], {
+    [["object",{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}], [['ids','1,20'],['name','r']], {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 1'],
-    [{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}, [['name','ra'],['ids','1,20']], {
+    [["object",{"+ ids":["array 0 3", "int_4 0 9"],"+ name":"string 2 3"}], [['name','ra'],['ids','1,20']], {
       message: 'Invalid int_4: too long',
       path: 'object.ids[1]',
     }, 'arr int too long 2'],
@@ -271,29 +271,21 @@ describe('error-paths in parse_flat_pairs', () => {
 
 describe('error-paths in schemas', () => {
   const tests = [
-    [{"?":"what"}, '{na: "r"}', {
-      message: 'Invalid Type. Expected: boolean, found: String',
-      path: '.?',
-    }, 'invalid ?'],
-    [{
-      "+ bobo": [
-        "array 0 2",
-        {
-          "+ lobo": {
-            "+ zorro": ["array 0 3", "string 2"],
-          },
-        }]}, '{na: "r"}', {
+    [["object",{
+      "+ bobo": ["array 0 2", ["object",{
+        "+ lobo": ["object",{
+          "+ zorro": ["array 0 3", "string 2"],
+        }],
+      }]]}], '{na: "r"}', {
       message: 'Invalid max_length param for string schema: undefined',
       path: '.+ bobo[.+ lobo.+ zorro[',
     }, 'invalid leaf array'],
-    [{
-      "+ bobo": [
-        "array -1 2",
-        {
-          "+ lobo": {
-            "+ zorro": ["array 0 3", "string 2 3"],
-          },
-        }]}, '{na: "r"}', {
+    [["object",{
+      "+ bobo": ["array -1 2", ["object",{
+        "+ lobo": ["object",{
+          "+ zorro": ["array 0 3", "string 2 3"],
+        }],
+      }]]}], '{na: "r"}', {
       message: 'Invalid min_length param for array schema: -1',
       path: '.+ bobo',
     }, 'invalid intermediate array'],
@@ -307,10 +299,10 @@ describe('error-paths in schemas', () => {
       const bobson = new Bobson_Builder()
       bobson.add_derived_types({
         'custom_str': "string 0 12",
-        'custom_obj': {
+        'custom_obj': ['object',{
           '+ id': 'int_js 0 100',
           '+ name': 'string',
-        },
+        }],
       })
       throw new Error('should have thrown')
     }

@@ -115,13 +115,13 @@ describe('parse_chunk', () => {
         [["?array 0 10", "int_4 0 200"], '["0","123","45"]', [0,123,45], '?arr'],
         [["?array 0 10", "int_4 0 200"], 'null', null, '?arr null'],
         [["array 0 10", ["array 0 10", "int_4 0 200"]], '[["0","123"],["2"]]', [[0,123],[2]], 'arr[]'],
-        [["array 0 10", {"- olo":"string 0 1"}], '[{},{"olo":"a"}]', [{},{olo:'a'}], 'arr obj'],
+        [["array 0 10", ["object",{"- olo":"string 0 1"}]], '[{},{"olo":"a"}]', [{},{olo:'a'}], 'arr obj'],
 
-        [{}, '{}', {}, 'obj empty'],
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '{"olo":"ha","bob":"2"}', {olo:'ha',bob:2}, 'obj 2 fields'],
-        [{"+ bat":{}}, '{"bat":{}}', {bat:{}}, 'obj recursive'],
-        [{"?":true, "+ bob":"int_4 0 2"}, '{"bob":"2"}', {bob:2}, '?obj bob'],
-        [{"?":true, "+ bob":"int_4 0 2"}, 'null', null, '?obj null'],
+        [["object",{}], '{}', {}, 'obj empty'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '{"olo":"ha","bob":"2"}', {olo:'ha',bob:2}, 'obj 2 fields'],
+        [["object",{"+ bat":["object",{}]}], '{"bat":{}}', {bat:{}}, 'obj recursive'],
+        [["?object",{"+ bob":"int_4 0 2"}], '{"bob":"2"}', {bob:2}, '?obj bob'],
+        [["?object",{"+ bob":"int_4 0 2"}], 'null', null, '?obj null'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -140,12 +140,12 @@ describe('parse_chunk', () => {
         [["array 0 10", "string 0 10"], '["a""b"]', 'Invalid array enclosing char. Expected: , or ], found: "', 'arr end or comma'],
         [["array 0 10", "string 0 10"], '["a","b"', 'Incomplete payload. Some characters are missing at the end', 'arr enclosing'],
 
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '"olo":"ha","bob":"2"}', 'Invalid object opening char. Expected: {, found: "', 'obj start'],
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '{"olo":"ha""bob":"2"}', 'Invalid object enclosing char. Expected: , or }, found: "', 'obj comma'],
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '{"olo":"ha",}', 'Invalid string opening char. Expected: ", found: }', 'obj mem-string start'],
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '{"olo":"ha","bob"}', 'Invalid object member-colon. Expected: :, found: }', 'obj mem-colon'],
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '{"olo":"ha","bob":}', 'Invalid string opening char. Expected: ", found: }', 'obj int_4'],
-        [{"+ olo":"string 0 10","+ bob":"int_4 0 2"}, '{"olo":"ha","bob":"2"', 'Incomplete payload. Some characters are missing at the end', 'obj enclosing'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '"olo":"ha","bob":"2"}', 'Invalid object opening char. Expected: {, found: "', 'obj start'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '{"olo":"ha""bob":"2"}', 'Invalid object enclosing char. Expected: , or }, found: "', 'obj comma'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '{"olo":"ha",}', 'Invalid string opening char. Expected: ", found: }', 'obj mem-string start'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '{"olo":"ha","bob"}', 'Invalid object member-colon. Expected: :, found: }', 'obj mem-colon'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '{"olo":"ha","bob":}', 'Invalid string opening char. Expected: ", found: }', 'obj int_4'],
+        [["object",{"+ olo":"string 0 10","+ bob":"int_4 0 2"}], '{"olo":"ha","bob":"2"', 'Incomplete payload. Some characters are missing at the end', 'obj enclosing'],
       ]
       for (const t of tests) {
         run_invalid(t)
@@ -183,7 +183,7 @@ describe('parse_chunk', () => {
 
   describe('{}', () => {
     it('empty', () => {
-      const p = bobson.get_parser({})
+      const p = bobson.get_parser(["object",{}])
       p.parse_chunk('{')
       p.parse_chunk('}')
       const result = p.get_result()
@@ -191,7 +191,7 @@ describe('parse_chunk', () => {
     })
 
     it('+string', () => {
-      const p = bobson.get_parser({"+ bobo": "string 1 2"})
+      const p = bobson.get_parser(["object",{"+ bobo": "string 1 2"}])
       p.parse_chunk('{"bobo"')
       p.parse_chunk(':"l"}')
       const result = p.get_result()

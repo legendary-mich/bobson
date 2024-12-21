@@ -178,11 +178,11 @@ describe('array edge cases', () => {
       [['array 0 1', '?enum bo'], '["bo"]', ['bo'], '?enum full'],
       [['array 0 1', '?enum bo'], '[null]', [null], '?enum null'],
 
-      [['array 0 1', {}], '[]', [], 'object empty'],
-      [['array 0 1', {}], '[{}]', [{}], 'object full'],
-      [['array 0 1', {"?":true}], '[]', [], '?object empty'],
-      [['array 0 1', {"?":true}], '[{}]', [{}], '?object full'],
-      [['array 0 1', {"?":true}], '[null]', [null], '?object null'],
+      [['array 0 1', ["object", {}]], '[]', [], 'object empty'],
+      [['array 0 1', ["object", {}]], '[{}]', [{}], 'object full'],
+      [['array 0 1', ["?object", {}]], '[]', [], '?object empty'],
+      [['array 0 1', ["?object", {}]], '[{}]', [{}], '?object full'],
+      [['array 0 1', ["?object", {}]], '[null]', [null], '?object null'],
     ]
     for (const t of tests) {
       run_valid(t)

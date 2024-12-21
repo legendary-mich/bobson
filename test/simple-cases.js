@@ -70,53 +70,53 @@ describe('simple cases', () => {
     })
   })
 
-  describe('{}', () => {
+  describe('object', () => {
     it('empty', () => {
-      const p = bobson.get_parser({})
+      const p = bobson.get_parser(["object",{}])
       const result = p.parse('{}')
       deepEq(result, {})
     })
 
     it('-string', () => {
-      const p = bobson.get_parser({"- bobo": "string 0 32"})
+      const p = bobson.get_parser(["object",{"- bobo": "string 0 32"}])
       const result = p.parse('{}')
       deepEq(result, {})
     })
 
     it('+string, +string', () => {
-      const p = bobson.get_parser({"+ bobo": "string 0 32", "+ lobo": "string 0 32"})
+      const p = bobson.get_parser(["object",{"+ bobo": "string 0 32", "+ lobo": "string 0 32"}])
       const result = p.parse('{"bobo":"l","lobo":"kom"}')
       deepEq(result, {bobo: 'l', lobo: 'kom'})
     })
 
     it('recursive {}', () => {
-      const p = bobson.get_parser({"+ zozo": {"+ bobo": "string 1 2"}})
+      const p = bobson.get_parser(["object",{"+ zozo": ["object",{"+ bobo": "string 1 2"}]}])
       const result = p.parse('{"zozo":{"bobo":"l"}}')
       deepEq(result, {zozo: {bobo: 'l'}})
     })
   })
 
-  describe('{"?":true}', () => {
+  describe('?object', () => {
     it('empty empty', () => {
-      const p = bobson.get_parser({"?":true})
+      const p = bobson.get_parser(["?object",{}])
       const result = p.parse('{}')
       deepEq(result, {})
     })
 
     it('empty null', () => {
-      const p = bobson.get_parser({"?":true})
+      const p = bobson.get_parser(["?object",{}])
       const result = p.parse('null')
       deepEq(result, null)
     })
 
     it('recursive null', () => {
-      const p = bobson.get_parser({"+ i": {"?":true}})
+      const p = bobson.get_parser(["object",{"+ i": ["?object",{}]}])
       const result = p.parse('{"i":null}')
       deepEq(result, {i: null})
     })
   })
 
-  describe('[]', () => {
+  describe('array', () => {
     it('empty', () => {
       const p = bobson.get_parser(["array 0 1", "string 0 20"])
       const result = p.parse('[]')
@@ -237,7 +237,7 @@ describe('simple cases', () => {
     })
 
     it('object', () => {
-      const schema = {"+ name": "string 0 20"}
+      const schema = ["object", {"+ name": "string 0 20"}]
       const parsers = {
         string: (s) => s.length,
       }

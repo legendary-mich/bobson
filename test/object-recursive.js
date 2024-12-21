@@ -29,9 +29,9 @@ function run_invalid(t) {
 describe('object recursive', () => {
   describe('object valid', () => {
     const tests = [
-      [{"- olo":{}}, '{}', {}, 'optional empty'],
-      [{"- olo":{}}, '{"olo":{}}', {olo:{}}, 'optional full'],
-      [{"+ olo":{}}, '{"olo":{}}', {olo:{}}, 'required full'],
+      [["object",{"- olo":["object",{}]}], '{}', {}, 'optional empty'],
+      [["object",{"- olo":["object",{}]}], '{"olo":{}}', {olo:{}}, 'optional full'],
+      [["object",{"+ olo":["object",{}]}], '{"olo":{}}', {olo:{}}, 'required full'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -40,12 +40,12 @@ describe('object recursive', () => {
 
   describe('?object valid', () => {
     const tests = [
-      [{"- olo":{"?":true}}, '{}', {}, 'optional empty'],
-      [{"- olo":{"?":true}}, '{"olo":{}}', {olo:{}}, 'optional full'],
-      [{"+ olo":{"?":true}}, '{"olo":{}}', {olo:{}}, 'required full'],
+      [["object",{"- olo":["?object",{}]}], '{}', {}, 'optional empty'],
+      [["object",{"- olo":["?object",{}]}], '{"olo":{}}', {olo:{}}, 'optional full'],
+      [["object",{"+ olo":["?object",{}]}], '{"olo":{}}', {olo:{}}, 'required full'],
 
-      [{"- olo":{"?":true}}, '{"olo":null}', {olo:null}, 'optional null'],
-      [{"+ olo":{"?":true}}, '{"olo":null}', {olo:null}, 'required null'],
+      [["object",{"- olo":["?object",{}]}], '{"olo":null}', {olo:null}, 'optional null'],
+      [["object",{"+ olo":["?object",{}]}], '{"olo":null}', {olo:null}, 'required null'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -54,8 +54,8 @@ describe('object recursive', () => {
 
   describe('too many fields', () => {
     const tests = [
-      [{"+ i":{}}, '{"i":{"bobo":"ho"}}', 'Unknown key found: bobo', 'empty'],
-      [{"+ i":{"+ bobo": "string 0 2"}}, '{"i":{"bobo":"ho","roko":"zo"}}',
+      [["object",{"+ i":["object",{}]}], '{"i":{"bobo":"ho"}}', 'Unknown key found: bobo', 'empty'],
+      [["object",{"+ i":["object",{"+ bobo": "string 0 2"}]}], '{"i":{"bobo":"ho","roko":"zo"}}',
         'Unknown key found: roko', 'single field'],
     ]
     for (const t of tests) {
@@ -65,7 +65,7 @@ describe('object recursive', () => {
 
   describe('missing a required field', () => {
     const tests = [
-      [{"+ i":{"+ bobo": "string 0 2"}}, '{"i":{}}',
+      [["object",{"+ i":["object",{"+ bobo": "string 0 2"}]}], '{"i":{}}',
         'Invalid object: missing required field: bobo', 'missing bobo'],
     ]
     for (const t of tests) {
@@ -75,7 +75,7 @@ describe('object recursive', () => {
 
   describe('non-nullable null', () => {
     const tests = [
-      [{"+ i":{}}, '{"i":null}', 'Invalid object: null', 'recursive empty'],
+      [["object",{"+ i":["object",{}]}], '{"i":null}', 'Invalid object: null', 'recursive empty'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -84,7 +84,7 @@ describe('object recursive', () => {
 
   describe('invalid string inside an object', () => {
     const tests = [
-      [{"+ a":{"+ i":"string 1 2"}}, '{"a":{"i":"abc"}}', 'Invalid string: too long', 'too long'],
+      [["object",{"+ a":["object",{"+ i":"string 1 2"}]}], '{"a":{"i":"abc"}}', 'Invalid string: too long', 'too long'],
     ]
     for (const t of tests) {
       run_invalid(t)

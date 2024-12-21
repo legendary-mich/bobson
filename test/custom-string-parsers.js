@@ -135,10 +135,10 @@ describe('custom string parsers', () => {
   describe('string in an object', () => {
     describe('object with 2 fields', () => {
       const tests = [
-        [{"- olo":"string 0 2", "- bob":"string 0 2"}, '{}', {}, 'optional empty'],
-        [{"- olo":"string 0 2", "- bob":"string 0 2"}, '{"olo":"ha"}', {olo: 2}, 'optional first'],
-        [{"- olo":"string 0 2", "- bob":"string 0 2"}, '{"bob":"ha"}', {bob: 2}, 'optional second'],
-        [{"+ olo":"string 0 2", "+ bob":"string 0 2"}, '{"olo":"ha","bob":"l"}', {olo: 2, bob: 1}, 'required both'],
+        [["object",{"- olo":"string 0 2", "- bob":"string 0 2"}], '{}', {}, 'optional empty'],
+        [["object",{"- olo":"string 0 2", "- bob":"string 0 2"}], '{"olo":"ha"}', {olo: 2}, 'optional first'],
+        [["object",{"- olo":"string 0 2", "- bob":"string 0 2"}], '{"bob":"ha"}', {bob: 2}, 'optional second'],
+        [["object",{"+ olo":"string 0 2", "+ bob":"string 0 2"}], '{"olo":"ha","bob":"l"}', {olo: 2, bob: 1}, 'required both'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -147,10 +147,10 @@ describe('custom string parsers', () => {
 
     describe('object valid', () => {
       const tests = [
-        [{}, '{}', {}, 'empty'],
-        [{"- olo":"string 0 2"}, '{}', {}, 'optional empty'],
-        [{"- olo":"string 0 2"}, '{"olo":"ha"}', {olo: 2}, 'optional full'],
-        [{"+ olo":"string 0 2"}, '{"olo":"ha"}', {olo: 2}, 'required full'],
+        [["object",{}], '{}', {}, 'empty'],
+        [["object",{"- olo":"string 0 2"}], '{}', {}, 'optional empty'],
+        [["object",{"- olo":"string 0 2"}], '{"olo":"ha"}', {olo: 2}, 'optional full'],
+        [["object",{"+ olo":"string 0 2"}], '{"olo":"ha"}', {olo: 2}, 'required full'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -159,14 +159,14 @@ describe('custom string parsers', () => {
 
     describe('?object valid', () => {
       const tests = [
-        [{"?":true}, '{}', {}, 'empty'],
-        [{"?":true, "- olo":"string 0 2"}, '{}', {}, 'optional empty'],
-        [{"?":true, "- olo":"string 0 2"}, '{"olo":"ha"}', {olo: 2}, 'optional full'],
-        [{"?":true, "+ olo":"string 0 2"}, '{"olo":"ha"}', {olo: 2}, 'required full'],
+        [["?object",{}], '{}', {}, 'empty'],
+        [["?object",{"- olo":"string 0 2"}], '{}', {}, 'optional empty'],
+        [["?object",{"- olo":"string 0 2"}], '{"olo":"ha"}', {olo: 2}, 'optional full'],
+        [["?object",{"+ olo":"string 0 2"}], '{"olo":"ha"}', {olo: 2}, 'required full'],
 
-        [{"?":true}, 'null', null, 'null'],
-        [{"?":true, "- olo":"string 0 2"}, 'null', null, 'optional null'],
-        [{"?":true, "+ olo":"string 0 2"}, 'null', null, 'required null'],
+        [["?object",{}], 'null', null, 'null'],
+        [["?object",{"- olo":"string 0 2"}], 'null', null, 'optional null'],
+        [["?object",{"+ olo":"string 0 2"}], 'null', null, 'required null'],
       ]
       for (const t of tests) {
         run_valid(t)

@@ -4,14 +4,14 @@ const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
 const builder = new Bobson_Builder()
 builder.add_derived_types({
-  "user": {
+  "user": ["object", {
     "+ id": "int_4 0 max",
     "- name": "string 1 10",
     "- date": "?string 10 10 \\d{4}-\\d{2}-\\d{2}",
     "- height": "int_4 0 230",
     "- sp ace": "string 0 20",
-  },
-  "employee": {
+  }],
+  "employee": ["object", {
     "+ id": "int_8 0 max",
     "+ job": "string 0 20",
     "< user": [
@@ -20,7 +20,7 @@ builder.add_derived_types({
       "- height",
       "- sp ace",
     ],
-  },
+  }],
 })
 
 function run_valid(t) {
