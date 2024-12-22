@@ -43,6 +43,8 @@ describe('schema validation', () => {
   describe('object', () => {
     const tests = [
       [["object"], 'Invalid Type. Expected: object, found: undefined', 'invalid object'],
+      [["xobject", {}], 'Unknown schema type: xobject', 'xobject'],
+      [["objectx", {}], 'Unknown schema type: objectx', 'objectx'],
       [["object",{"z bo":"what"}], 'Invalid prefix. Expected: (+/-) bo, found: (z) bo', 'invalid prefix'],
       [["object",{"+ bo":"what"}], 'Unknown schema type: what', 'obj unknown what'],
       [["object",{"+ bo":true}], 'Unknown schema type: Boolean', 'obj unknown true'],
@@ -57,6 +59,9 @@ describe('schema validation', () => {
   describe('array', () => {
     const tests = [
       [['!array 2 3', 'string 0 0'], 'Unknown schema type: !array 2 3', 'unknown schema !array'],
+      [['array 2 3 4', 'string 0 0'], 'Unknown schema type: array 2 3 4', '3 length args'],
+      [['array s 3', 'string 0 0'], 'Invalid min_length param for array schema: s', 'invalid min length'],
+      [['array 2 z', 'string 0 0'], 'Invalid max_length param for array schema: z', 'invalid max length'],
 
       [['array 0 0'], 'Unknown schema type: undefined', 'arr no schema'],
       [['array 0 0', 'what'], 'Unknown schema type: what', 'arr unknown schema'],

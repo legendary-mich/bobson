@@ -6,10 +6,10 @@ bobson.add_derived_types({
   'username': 'string 3 30 ^\\S.*\\S$',
   'password': 'string 5 24',
   'color': 'enum red green blue',
-  'auth': {
+  'auth': ["object", {
     '+ username': 'username',
     '+ password': 'password',
-  },
+  }],
 })
 const bobson_string = '{"username":"bob","password":"qwerty"}'
 const parser = bobson.get_parser('auth')

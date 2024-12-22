@@ -127,6 +127,7 @@ describe('serializers', () => {
       })
       builder.add_derived_types({
         'custom_int': 'int_4 20 30',
+        'custom_cloned': 'custom_int',
       })
 
       // string ================================================================
@@ -178,6 +179,19 @@ describe('serializers', () => {
       deepEq(result, 48)
 
       schema = builder.get_serializer("custom_int")
+      result = schema.serialize(null)
+      deepEq(result, null)
+
+      // custom_cloned =========================================================
+      schema = builder.get_serializer("custom_cloned")
+      result = schema.serialize(23)
+      deepEq(result, 46)
+
+      schema = builder.get_serializer("custom_cloned")
+      result = schema.serialize(24)
+      deepEq(result, 48)
+
+      schema = builder.get_serializer("custom_cloned")
       result = schema.serialize(null)
       deepEq(result, null)
 

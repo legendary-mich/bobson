@@ -10,6 +10,7 @@ bobson.add_parser_functions({
 bobson.add_derived_types({
   custom_1: 'string 0 4',
   custom_2: 'int_4 0 100',
+  custom_3: 'custom_2',
 })
 
 function run_valid(t) {
@@ -39,6 +40,7 @@ describe('custom derived type parsers', () => {
     const tests = [
       ['custom_1', '"bobo"', 4, 'custom 1 bobo'],
       ['custom_2', '"23"', '2323', 'custom 2 23'],
+      ['custom_3', '"23"', '2323', 'custom 3 23'],
     ]
     for (const t of tests) {
       run_valid(t)

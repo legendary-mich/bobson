@@ -3,19 +3,19 @@
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
 bobson.add_derived_types({
-  "user": {
+  "user": ["object", {
     "+ id": "int_4 0 max",
     "- name": "string 1 10",
     "- height": "int_4 0 230",
-  },
-  "employee": {
+  }],
+  "employee": ["object", {
     "+ id": "int_8 0 max",
     "+ job": "string 0 20",
     "< user": [
       "+ name",
       "- height",
     ],
-  },
+  }],
 })
 const bobson_string = '{"id":"2","job":"cook","name":"bob","height":"180"}'
 const parser = bobson.get_parser('employee')

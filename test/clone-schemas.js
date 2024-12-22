@@ -1,6 +1,6 @@
 'use strict'
 
-const {deepStrictEqual: deepEq} = require('node:assert/strict')
+const {deepStrictEqual: deepEq, ok} = require('node:assert/strict')
 const {
   Object_Schema,
   Array_Schema,
@@ -21,6 +21,10 @@ describe('clone schemas', () => {
     deepEq(clone.type, 'new type')
     deepEq(clone.fields, fields)
     deepEq(clone.required_fields, required_fields)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 
   it('Array_Schema', () => {
@@ -34,6 +38,10 @@ describe('clone schemas', () => {
     deepEq(clone.min_length, min_length)
     deepEq(clone.max_length, max_length)
     deepEq(clone.child_schema, child_schema)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 
   it('String_Schema', () => {
@@ -47,6 +55,10 @@ describe('clone schemas', () => {
     deepEq(clone.min_length, min_length)
     deepEq(clone.max_length, max_length)
     deepEq(clone.regex, regex)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 
   it('Enum_Schema', () => {
@@ -56,6 +68,10 @@ describe('clone schemas', () => {
     deepEq(clone instanceof Enum_Schema, true)
     deepEq(clone.type, 'new type')
     deepEq(clone.enums, base.enums)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 
   it('Integer_Schema', () => {
@@ -67,6 +83,10 @@ describe('clone schemas', () => {
     deepEq(clone.type, 'new type')
     deepEq(clone.min, min)
     deepEq(clone.max, max)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 
   it('BigInt_Schema', () => {
@@ -78,6 +98,10 @@ describe('clone schemas', () => {
     deepEq(clone.type, 'new type')
     deepEq(clone.min, min)
     deepEq(clone.max, max)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 
   it('Decimal_Schema', () => {
@@ -91,5 +115,9 @@ describe('clone schemas', () => {
     deepEq(clone.max.string, max)
     deepEq(clone.min, base.min)
     deepEq(clone.max, base.max)
+
+    ok(clone.parser_fn); ok(clone.serializer_fn)
+    deepEq(clone.parser_fn, base.parser_fn)
+    deepEq(clone.serializer_fn, base.serializer_fn)
   })
 })

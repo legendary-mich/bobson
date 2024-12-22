@@ -33,6 +33,8 @@ describe('enum edge cases', () => {
       ['enum alo orra ro', '"alo"', 'alo', 'alo'],
       ['enum alo orra ro', '"orra"', 'orra', 'orra'],
       ['enum alo orra ro', '"ro"', 'ro', 'ro'],
+
+      [['enum', 'alo', 'or ra', 'ro'], '"or ra"', 'or ra', 'with space'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -48,6 +50,9 @@ describe('enum edge cases', () => {
       ['?enum alo orra ro', '"ro"', 'ro', 'ro'],
 
       ['?enum alo orra ro', 'null', null, 'null'],
+
+      [['?enum', 'alo', 'or ra', 'ro'], '"or ra"', 'or ra', 'with space'],
+      [['?enum', 'alo', 'or ra', 'ro'], 'null', null, 'null with space'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -59,6 +64,8 @@ describe('enum edge cases', () => {
       ['enum a', '""', 'Invalid enum: too short', 'empty'],
       ['enum bo', '"b"', 'Invalid enum: too short', 'b'],
       ['enum abcd log', '"ro"', 'Invalid enum: too short', 'ro'],
+
+      [['enum', 'abcd', 'log'], '"ro"', 'Invalid enum: too short', 'too short in arr'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -81,6 +88,8 @@ describe('enum edge cases', () => {
       ['enum a', '"ab"', 'Invalid enum: too long', 'ab'],
       ['enum bo', '"boc"', 'Invalid enum: too long', 'boc'],
       ['enum a lo c', '"rok"', 'Invalid enum: too long', 'rok'],
+
+      [['enum', 'a', 'lo s', 'c'], '"lo ss"', 'Invalid enum: too long', 'lo ss with spae'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -92,6 +101,8 @@ describe('enum edge cases', () => {
       ['?enum a', '"ab"', 'Invalid ?enum: too long', 'ab'],
       ['?enum bo', '"boc"', 'Invalid ?enum: too long', 'boc'],
       ['?enum a lo c', '"rok"', 'Invalid ?enum: too long', 'rok'],
+
+      [['?enum', 'a', 'lo s', 'c'], '"lo ss"', 'Invalid ?enum: too long', 'lo ss with spae'],
     ]
     for (const t of tests) {
       run_invalid(t)
