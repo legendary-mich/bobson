@@ -9,6 +9,12 @@ bobson.add_derived_types({
     '+ name': 'string 1 10',
   }],
   'custom_alias': 'custom_obj',
+  'inherited_obj': ["object", {
+    "< custom_obj": [
+      "+ cust_id", "= id",
+      "+ name",
+    ],
+  }],
 })
 
 function run_invalid_parse(t) {
@@ -170,6 +176,22 @@ describe('error-paths in parse', () => {
         path: 'custom_alias.id',
       },
       'custom_alias: id too small',
+    ],
+    [
+      'inherited_obj',
+      '{"cust_id":"-20","name":"john"}', {
+        message: 'Invalid int_js: too small',
+        path: 'inherited_obj.cust_id',
+      },
+      'inherited_obj: id too small',
+    ],
+    [
+      'inherited_obj',
+      '{"cust_id":"20"}', {
+        message: 'Invalid inherited_obj: missing required field: name',
+        path: 'inherited_obj',
+      },
+      'inherited_obj: missing name',
     ],
   ]
   for (const t of tests) {

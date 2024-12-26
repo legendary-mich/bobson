@@ -48,9 +48,9 @@ describe('custom derived type inheritance', () => {
   describe('valid', () => {
     const tests = [
       ['employee', '{"id":"2","job":"cook","name":"bob","date":"2022-02-03"}',
-        {id:2n,job:'cook',name:'bob','date':'2022-02-03'}, 'without required'],
+        {id:2n,job:'cook',name:'bob','date':'2022-02-03'}, 'without optional'],
       ['employee', '{"id":"2","job":"cook","name":"bob","date":"2022-02-03","height":"180"}',
-        {id:2n,job:'cook',name:'bob','date':'2022-02-03',"height":180}, 'with required'],
+        {id:2n,job:'cook',name:'bob','date':'2022-02-03',"height":180}, 'with optional'],
       ['employee', '{"id":"2","job":"cook","name":"bob","date":null}',
         {id:2n,job:'cook',name:'bob','date':null}, 'nullable date'],
       ['employee', '{"id":"2","job":"cook","name":"bob","date":"2022-02-03","sp ace":""}',
@@ -64,7 +64,7 @@ describe('custom derived type inheritance', () => {
   describe('?valid', () => {
     const tests = [
       ['?employee', '{"id":"2","job":"cook","name":"bob","date":"2022-02-03"}',
-        {id:2n,job:'cook',name:'bob','date':'2022-02-03'}, 'without required'],
+        {id:2n,job:'cook',name:'bob','date':'2022-02-03'}, 'without optional'],
       ['?employee', 'null', null, 'nullable null'],
     ]
     for (const t of tests) {

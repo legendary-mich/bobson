@@ -293,4 +293,63 @@ describe('schema validation', () => {
     })
   })
 
+  describe('object inheritance with aliases', () => {
+    it('dangling alias at the beginning', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_types({
+          "user": ["object",{
+            "- name": "string 1 10",
+          }],
+          "employee": ["object",{
+            "< user": ["= name"],
+          }],
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid prefix. Expected: (+/-) name, found: (=) name')
+        deepEq(err.path, 'employee.< user')
+      }
+    })
+
+    it('dangling alias at the end', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_types({
+          "user": ["object",{
+            "- name": "string 1 10",
+          }],
+          "employee": ["object",{
+            "< user": ["+ uname", "= name", "= name"],
+          }],
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid prefix. Expected: (+/-) name, found: (=) name')
+        deepEq(err.path, 'employee.< user')
+      }
+    })
+
+    it('field already defined', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_types({
+          "user": ["object",{
+            "- name": "string 1 10",
+          }],
+          "employee": ["object",{
+            "< user": ["+ uname", "= name", "+ uname", "= name"],
+          }],
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Duplicate key found: uname')
+        deepEq(err.path, 'employee.< user')
+      }
+    })
+  })
+
 })
