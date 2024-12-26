@@ -2,7 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
+let bobson
 
 function run_valid(t) {
   it(t[3], () => {
@@ -26,6 +26,10 @@ function run_invalid(t) {
 }
 
 describe('string edge cases', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+  })
+
   describe('string valid', () => {
     const tests = [
       ['string 0 0', '""', '', '0 0 empty'],

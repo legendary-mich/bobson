@@ -2,9 +2,12 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
+let bobson
 
 describe('simple cases', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+  })
 
   describe('string', () => {
     it('abc', () => {
@@ -198,8 +201,8 @@ describe('simple cases', () => {
   })
 
   describe('custom schemas', () => {
-    const bobson = new Bobson_Builder()
     it('color', () => {
+      const bobson = new Bobson_Builder()
       const schema = "color"
       const definitions = {
         "color": "enum red green blue",

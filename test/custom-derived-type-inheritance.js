@@ -2,26 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const builder = new Bobson_Builder()
-builder.add_derived_types({
-  "user": ["object", {
-    "+ id": "int_4 0 max",
-    "- name": "string 1 10",
-    "- date": "?string 10 10 \\d{4}-\\d{2}-\\d{2}",
-    "- height": "int_4 0 230",
-    "- sp ace": "string 0 20",
-  }],
-  "employee": ["object", {
-    "+ id": "int_8 0 max",
-    "+ job": "string 0 20",
-    "< user": [
-      "+ name",
-      "+ date",
-      "- height",
-      "- sp ace",
-    ],
-  }],
-})
+let builder
 
 function run_valid(t) {
   it(t[3], () => {
@@ -45,6 +26,29 @@ function run_invalid(t) {
 }
 
 describe('custom derived type inheritance', () => {
+  before(() => {
+    builder = new Bobson_Builder()
+    builder.add_derived_types({
+      "user": ["object", {
+        "+ id": "int_4 0 max",
+        "- name": "string 1 10",
+        "- date": "?string 10 10 \\d{4}-\\d{2}-\\d{2}",
+        "- height": "int_4 0 230",
+        "- sp ace": "string 0 20",
+      }],
+      "employee": ["object", {
+        "+ id": "int_8 0 max",
+        "+ job": "string 0 20",
+        "< user": [
+          "+ name",
+          "+ date",
+          "- height",
+          "- sp ace",
+        ],
+      }],
+    })
+  })
+
   describe('valid', () => {
     const tests = [
       ['employee', '{"id":"2","job":"cook","name":"bob","date":"2022-02-03"}',

@@ -2,16 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-bobson.add_parser_functions({
-  custom_1:(s)=>s.length,
-  custom_2:(s)=>s+s,
-})
-bobson.add_derived_types({
-  custom_1: 'string 0 4',
-  custom_2: 'int_4 0 100',
-  custom_3: 'custom_2',
-})
+let bobson
 
 function run_valid(t) {
   it(t[3], () => {
@@ -35,6 +26,20 @@ function run_invalid(t) {
 }
 
 describe('custom derived type parsers', () => {
+
+  before(() => {
+    bobson = new Bobson_Builder()
+    bobson.add_parser_functions({
+      custom_1:(s)=>s.length,
+      custom_2:(s)=>s+s,
+    })
+    bobson.add_derived_types({
+      custom_1: 'string 0 4',
+      custom_2: 'int_4 0 100',
+      custom_3: 'custom_2',
+    })
+
+  })
 
   describe('valid', () => {
     const tests = [

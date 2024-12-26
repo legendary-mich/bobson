@@ -2,7 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
+let bobson
 
 function run_invalid(t) {
   it(t[2], () => {
@@ -17,6 +17,9 @@ function run_invalid(t) {
 }
 
 describe('schema validation', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+  })
 
   describe('unknown', () => {
     const tests = [

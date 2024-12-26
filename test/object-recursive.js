@@ -2,8 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-
+let bobson
 
 function run_valid(t) {
   it(t[3], () => {
@@ -27,6 +26,10 @@ function run_invalid(t) {
 }
 
 describe('object recursive', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+  })
+
   describe('object valid', () => {
     const tests = [
       [["object",{"- olo":["object",{}]}], '{}', {}, 'optional empty'],

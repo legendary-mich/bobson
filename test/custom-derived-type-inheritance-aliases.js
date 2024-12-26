@@ -2,32 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const builder = new Bobson_Builder()
-builder.add_derived_types({
-  "user": ["object", {
-    "+ id": "int_8 1 max",
-    "+ name": "?string 1 10",
-    "+ height": "int_4 0 230",
-  }],
-  "email": ["object", {
-    "+ id": "int_4 1 max",
-    "+ address": "string 1 10",
-    "+ something": "string 1 10",
-  }],
-  "user_email": ["object", {
-    "< user": [
-      "+ user_id", "= id",
-      "- uname", "= name",
-      "- bname", "= name",
-      "+ height",
-    ],
-    "< email": [
-      "+ address",
-      "- sth", "= something",
-      "+ email_id", "= id",
-    ],
-  }],
-})
+let builder
 
 function run_valid(t) {
   it(t[3], () => {
@@ -52,6 +27,36 @@ function run_invalid(t) {
 }
 
 describe('custom derived type inheritance aliases', () => {
+
+  before(() => {
+    builder = new Bobson_Builder()
+    builder.add_derived_types({
+      "user": ["object", {
+        "+ id": "int_8 1 max",
+        "+ name": "?string 1 10",
+        "+ height": "int_4 0 230",
+      }],
+      "email": ["object", {
+        "+ id": "int_4 1 max",
+        "+ address": "string 1 10",
+        "+ something": "string 1 10",
+      }],
+      "user_email": ["object", {
+        "< user": [
+          "+ user_id", "= id",
+          "- uname", "= name",
+          "- bname", "= name",
+          "+ height",
+        ],
+        "< email": [
+          "+ address",
+          "- sth", "= something",
+          "+ email_id", "= id",
+        ],
+      }],
+    })
+
+  })
   describe('valid', () => {
     const tests = [
       ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street"}',

@@ -2,8 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-bobson.add_parser_functions({array:(a)=>a.length})
+let bobson = null
 
 function run_valid(t) {
   it(t[3], () => {
@@ -27,6 +26,11 @@ function run_invalid(t) {
 }
 
 describe('custom array parsers', () => {
+
+  before(() => {
+    bobson = new Bobson_Builder()
+    bobson.add_parser_functions({array:(a)=>a.length})
+  })
 
   describe('top-level-array', () => {
     describe('array valid', () => {

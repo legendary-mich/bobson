@@ -2,8 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-bobson.add_parser_functions({object:(o)=>Object.keys(o).length})
+let bobson
 
 function run_valid(t) {
   it(t[3], () => {
@@ -27,6 +26,11 @@ function run_invalid(t) {
 }
 
 describe('custom object parsers', () => {
+
+  before(() => {
+    bobson = new Bobson_Builder()
+    bobson.add_parser_functions({object:(o)=>Object.keys(o).length})
+  })
 
   describe('top-level-object', () => {
     describe('object valid', () => {

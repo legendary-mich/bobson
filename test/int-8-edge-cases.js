@@ -2,7 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
+let bobson
 
 function run_valid(t) {
   it(t[3], () => {
@@ -26,6 +26,10 @@ function run_invalid(t) {
 }
 
 describe('int_8 edge cases', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+  })
+
   describe('valid', () => {
     const tests = [
       ['int_8 min max', '"-9223372036854775808"', -9223372036854775808n, 'min'],

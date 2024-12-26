@@ -2,7 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
+let bobson
 
 function run_valid(t) {
   const payload = t[1]
@@ -40,6 +40,9 @@ function run_invalid(t) {
 }
 
 describe('parse_chunk', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+  })
 
   describe('empty strings in parse_chunk', () => {
     it('two letters', () => {

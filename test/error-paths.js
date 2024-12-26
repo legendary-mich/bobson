@@ -2,20 +2,7 @@
 
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-bobson.add_derived_types({
-  'custom_obj': ["object", {
-    '+ id': 'int_js 0 100',
-    '+ name': 'string 1 10',
-  }],
-  'custom_alias': 'custom_obj',
-  'inherited_obj': ["object", {
-    "< custom_obj": [
-      "+ cust_id", "= id",
-      "+ name",
-    ],
-  }],
-})
+let bobson
 
 function run_invalid_parse(t) {
   it(t[3], () => {
@@ -56,6 +43,22 @@ function run_invalid_parse_flat_pairs(t) {
 }
 
 describe('error-paths in parse', () => {
+  before(() => {
+    bobson = new Bobson_Builder()
+    bobson.add_derived_types({
+      'custom_obj': ["object", {
+        '+ id': 'int_js 0 100',
+        '+ name': 'string 1 10',
+      }],
+      'custom_alias': 'custom_obj',
+      'inherited_obj': ["object", {
+        "< custom_obj": [
+          "+ cust_id", "= id",
+          "+ name",
+        ],
+      }],
+    })
+  })
   const tests = [
     [
       ["object",{}],
