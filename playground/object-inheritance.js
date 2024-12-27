@@ -11,15 +11,16 @@ bobson.add_derived_types({
   "employee": ["object", {
     "+ id": "int_8 0 max",
     "+ job": "string 0 20",
-    "< user": [
+    "< user": [            // inherit the user_id, name, and height from the user
+      "+ user_id", "= id", // with the user_id being an alias for user.id
       "+ name",
       "- height",
     ],
   }],
 })
-const bobson_string = '{"id":"2","job":"cook","name":"bob","height":"180"}'
+const bobson_string = '{"id":"2","job":"cook","name":"bob","height":"180","user_id":"3"}'
 const parser = bobson.get_parser('employee')
 const parsed_employee = parser.parse(bobson_string)
 
 console.log('// output:', parsed_employee)
-// output: { id: 2n, job: 'cook', name: 'bob', height: 180 }
+// output: { id: 2n, job: 'cook', name: 'bob', height: 180, user_id: 3 }
