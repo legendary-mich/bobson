@@ -9,6 +9,13 @@ describe('simple cases', () => {
     bobson = new Bobson_Builder()
   })
 
+  describe('parse', () => {
+    it('100', () => {
+      const  result = bobson.parse("int_js 0 200", '"100"')
+      deepEq(result, 100)
+    })
+  })
+
   describe('string', () => {
     it('abc', () => {
       const p = bobson.get_parser("string 0 32")
