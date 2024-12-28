@@ -141,6 +141,14 @@ describe('error-paths in parse', () => {
       'array in an object',
     ],
     [
+      ["object",{"+ ola": "string 0 10", "+ tola": "string 0 10"}],
+      '{"ola":"lol","bobo":"co"}', {
+        message: 'Unknown key found: bobo',
+        path: 'object',
+      },
+      'unknown key in the top object',
+    ],
+    [
       ['array 0 1', ['array 0 3', "string 0 0"]],
       '[["","","a",""]]', {
         message: 'Invalid string: too long',
