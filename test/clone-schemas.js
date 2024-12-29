@@ -15,12 +15,14 @@ describe('clone schemas', () => {
   it('Object_Schema', () => {
     const fields = new Map()
     const required_fields = []
-    const base = new Object_Schema('old type', fields, required_fields)
+    const defaults = {}
+    const base = new Object_Schema('old type', fields, required_fields, defaults)
     const clone = base.clone('new type')
     deepEq(clone instanceof Object_Schema, true)
     deepEq(clone.type, 'new type')
     deepEq(clone.fields, fields)
     deepEq(clone.required_fields, required_fields)
+    deepEq(clone.defaults, defaults)
 
     ok(clone.parser_fn); ok(clone.serializer_fn)
     deepEq(clone.parser_fn, base.parser_fn)
@@ -30,7 +32,7 @@ describe('clone schemas', () => {
   it('Array_Schema', () => {
     const min_length = 2
     const max_length = 3
-    const child_schema = new Object_Schema('old type', new Map(), [])
+    const child_schema = new Object_Schema('old type', new Map(), [], {})
     const base = new Array_Schema('arr', min_length, max_length, child_schema)
     const clone = base.clone('new type')
     deepEq(clone instanceof Array_Schema, true)

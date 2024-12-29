@@ -126,6 +126,26 @@ describe('simple cases', () => {
     })
   })
 
+  describe('object defaults', () => {
+    it('populates the result with default values', () => {
+      const p = bobson.get_parser(["object", {
+        "+ one": "string 0 10",
+        "+ two": "string 0 10",
+        "- three": "string 0 10",
+        "- four": "string 0 10",
+        "- num": "int_4 0 10",
+      }, {
+        "one": "lolo",
+        "two": "bonk",
+        "three": "doll",
+        "four": "zonk",
+        "num": 4,
+      }])
+      const result = p.parse('{"one":"aa","three":"bb"}')
+      deepEq(result, {one: 'aa', two:'bonk', three: 'bb', four: 'zonk', num: 4})
+    })
+  })
+
   describe('array', () => {
     it('empty', () => {
       const p = bobson.get_parser(["array 0 1", "string 0 20"])

@@ -38,7 +38,7 @@ describe('custom object parsers', () => {
         [["object",{"- bob": "string 0 2"}], '{}', 0, 'optional empty'],
         [["object",{"- bob": "string 0 2"}], '{"bob":"lo"}', 1, 'optional 1 field'],
         [["object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', 1, 'required 1 field'],
-        [["object",{"+ bob": "string 0 2","+ lob": "string 0 2"},"tcejbo"], '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
+        [["object",{"+ bob": "string 0 2","+ lob": "string 0 2"}], '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
 
         [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{}', 0, 'recursive empty'],
         [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{"bob":{}}', 1, 'recursive 1 field'],
