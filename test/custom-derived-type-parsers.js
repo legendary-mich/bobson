@@ -29,23 +29,29 @@ describe('custom derived type parsers', () => {
 
   before(() => {
     bobson = new Bobson_Builder()
-    bobson.add_parser_functions({
-      custom_1:(s)=>s.length,
-      custom_2:(s)=>s+s,
+    bobson.add_derived_type('custom_1', 'string 0 4', {
+      parser_fn:(s)=>s.length,
+      serializer_fn:s=>s,
     })
-    bobson.add_derived_types({
-      custom_1: 'string 0 4',
-      custom_2: 'int_4 0 100',
-      custom_3: 'custom_2',
+    bobson.add_derived_type('custom_2', 'int_4 0 100', {
+      parser_fn:(s)=>parseFloat(s+s),
+      serializer_fn:s=>s,
+      comparer_fn: (a,b) => a > b ? 1 : a === b ? 0 : -1,
     })
-
+    bobson.add_derived_type('custom_3', 'custom_2')
+    bobson.add_derived_type('custom_4', 'custom_2', {
+      parser_fn:(s)=>parseFloat(s+s+s),
+      serializer_fn:s=>s,
+      comparer_fn: (a,b) => a > b ? 1 : a === b ? 0 : -1,
+    })
   })
 
   describe('valid', () => {
     const tests = [
       ['custom_1', '"bobo"', 4, 'custom 1 bobo'],
-      ['custom_2', '"23"', '2323', 'custom 2 23'],
-      ['custom_3', '"23"', '2323', 'custom 3 23'],
+      ['custom_2', '"23"', 2323, 'custom 2 23'],
+      ['custom_3', '"23"', 2323, 'custom 3 23'],
+      ['custom_4', '"23"', 232323, 'custom 3 23'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -55,7 +61,7 @@ describe('custom derived type parsers', () => {
   describe('?valid', () => {
     const tests = [
       ['?custom_1', '"bobo"', 4, 'custom 1 bobo'],
-      ['?custom_2', '"23"', '2323', 'custom 2 23'],
+      ['?custom_2', '"23"', 2323, 'custom 2 23'],
       ['?custom_1', 'null', null, 'custom 1 null'],
       ['?custom_2', 'null', null, 'custom 2 null'],
     ]

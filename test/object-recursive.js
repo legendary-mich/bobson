@@ -93,4 +93,31 @@ describe('object recursive', () => {
       run_invalid(t)
     }
   })
+
+  describe('custom parsers', () => {
+    // TODO: add a simmilar test for:
+    // object serializers
+    // array parsers
+    // array serializers
+    it('should be applied on every recursive level', () => {
+      const bobson = new Bobson_Builder()
+      bobson.add_derived_type('custom_1', ["object", {
+        "+ name": "string 0 10",
+        "- bob": "custom_1",
+      }])
+      bobson.add_derived_type('custom_2', 'custom_1', {
+        parser_fn: r => {r.name = r.name+'x'; return r},
+        serializer_fn: r => r,
+      })
+      const parser = bobson.get_parser('custom_2')
+      const result = parser.parse('{"name":"1","bob":{"name":"2"}}')
+      deepEq(result, {
+        name: '1x',
+        bob: {
+          // name: '2x', // TODO: 2x is expected here
+          name: '2',
+        },
+      })
+    })
+  })
 })

@@ -70,13 +70,13 @@ describe('simple cases', () => {
     it('21.20', () => {
       const p = bobson.get_parser("decimal 0.00 30.00")
       const result = p.parse('"21.20"')
-      deepEq(result, '21.20')
+      deepEq(result.toFixed(2), '21.20')
     })
 
     it('-21.20', () => {
       const p = bobson.get_parser("decimal -30.00 30.00")
       const result = p.parse('"-21.20"')
-      deepEq(result, '-21.20')
+      deepEq(result.toFixed(2), '-21.20')
     })
   })
 
@@ -244,11 +244,11 @@ describe('simple cases', () => {
   describe('custom parser functions', () => {
     it('string', () => {
       const schema = "string 0 20"
-      const parsers = {
-        string: (s) => s.length,
-      }
       const bobson = new Bobson_Builder()
-      bobson.add_parser_functions(parsers)
+      bobson.override_mixins('string', {
+        parser_fn: (s) => s.length,
+        serializer_fn: s => s,
+      })
       const p = bobson.get_parser(schema)
       const result = p.parse('"green"')
       deepEq(result, 5)
@@ -256,11 +256,11 @@ describe('simple cases', () => {
 
     it('?string', () => {
       const schema = "?string 0 20"
-      const parsers = {
-        'string': (s) => s.length,
-      }
       const bobson = new Bobson_Builder()
-      bobson.add_parser_functions(parsers)
+      bobson.override_mixins('string', {
+        parser_fn: (s) => s.length,
+        serializer_fn: s => s,
+      })
       const p = bobson.get_parser(schema)
       const result = p.parse('"green"')
       deepEq(result, 5)
@@ -268,11 +268,11 @@ describe('simple cases', () => {
 
     it('object', () => {
       const schema = ["object", {"+ name": "string 0 20"}]
-      const parsers = {
-        string: (s) => s.length,
-      }
       const bobson = new Bobson_Builder()
-      bobson.add_parser_functions(parsers)
+      bobson.override_mixins('string', {
+        parser_fn: (s) => s.length,
+        serializer_fn: s => s,
+      })
       const p = bobson.get_parser(schema)
       const result = p.parse('{"name":"hank"}')
       deepEq(result, {name:4})
@@ -280,11 +280,11 @@ describe('simple cases', () => {
 
     it('array', () => {
       const schema = ["array 0 4", "string 0 20"]
-      const parsers = {
-        string: (s) => s.length,
-      }
       const bobson = new Bobson_Builder()
-      bobson.add_parser_functions(parsers)
+      bobson.override_mixins('string', {
+        parser_fn: (s) => s.length,
+        serializer_fn: s => s,
+      })
       const p = bobson.get_parser(schema)
       const result = p.parse('["na","hank"]')
       deepEq(result, [2, 4])

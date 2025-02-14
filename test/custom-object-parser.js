@@ -29,19 +29,28 @@ describe('custom object parsers', () => {
 
   before(() => {
     bobson = new Bobson_Builder()
-    bobson.add_parser_functions({object:(o)=>Object.keys(o).length})
+    bobson.override_mixins('object', {
+      parser_fn:(o)=>{
+        const res = {}
+        for (const [key, value] of Object.entries(o)) {
+          res[key] = (typeof value === 'string') ? value.length : value
+        }
+        return res
+      },
+      serializer_fn: o => o,
+    })
   })
 
   describe('top-level-object', () => {
     describe('object valid', () => {
       const tests = [
-        [["object",{"- bob": "string 0 2"}], '{}', 0, 'optional empty'],
-        [["object",{"- bob": "string 0 2"}], '{"bob":"lo"}', 1, 'optional 1 field'],
-        [["object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', 1, 'required 1 field'],
-        [["object",{"+ bob": "string 0 2","+ lob": "string 0 2"}], '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
+        [["object",{"- bob": "string 0 2"}], '{}', {}, 'optional empty'],
+        [["object",{"- bob": "string 0 2"}], '{"bob":"lo"}', {bob:2}, 'optional 1 field'],
+        [["object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', {bob:2}, 'required 1 field'],
+        [["object",{"+ bob": "string 0 2","+ lob": "string 0 2"}], '{"bob":"lo","lob":"ho"}', {bob:2,lob:2}, 'required 2 fields'],
 
-        [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{}', 0, 'recursive empty'],
-        [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{"bob":{}}', 1, 'recursive 1 field'],
+        [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{}', {}, 'recursive empty'],
+        [["object",{"- bob": ["object",{"- lo":"string 0 2"}]}], '{"bob":{"lo":"ho"}}', {bob:{lo:2}}, 'recursive 1 field'],
       ]
       for (const t of tests) {
         run_valid(t)
@@ -50,10 +59,10 @@ describe('custom object parsers', () => {
 
     describe('?object valid', () => {
       const tests = [
-        [["?object",{"- bob": "string 0 2"}], '{}', 0, 'optional empty'],
-        [["?object",{"- bob": "string 0 2"}], '{"bob":"lo"}', 1, 'optional 1 field'],
-        [["?object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', 1, 'required 1 field'],
-        [["?object",{"+ bob": "string 0 2","+ lob": "string 0 2"}], '{"bob":"lo","lob":"ho"}', 2, 'required 2 fields'],
+        [["?object",{"- bob": "string 0 2"}], '{}', {}, 'optional empty'],
+        [["?object",{"- bob": "string 0 2"}], '{"bob":"lo"}', {bob:2}, 'optional 1 field'],
+        [["?object",{"+ bob": "string 0 2"}], '{"bob":"lo"}', {bob:2}, 'required 1 field'],
+        [["?object",{"+ bob": "string 0 2","+ lob": "string 0 2"}], '{"bob":"lo","lob":"ho"}', {bob:2,lob:2}, 'required 2 fields'],
 
         [["?object",{"- bob": "string 0 2"}], 'null', null, 'null'],
       ]

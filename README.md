@@ -74,6 +74,7 @@ const parsed_auth = parser.parse(bobson_string)
 console.log('// output:', parsed_auth)
 // output: { username: 'bob', password: 'qwerty' }
 ```
+
 ### Object Inheritance
 ```javascript
 const {Bobson_Builder} = require('../lib/index.js')
@@ -101,6 +102,7 @@ const parsed_employee = parser.parse(bobson_string)
 console.log('// output:', parsed_employee)
 // output: { id: 2n, job: 'cook', name: 'bob', height: 180, user_id: 3 }
 ```
+
 ### Object Defaults
 ```javascript
 const {Bobson_Builder} = require('../lib/index.js')
@@ -121,29 +123,61 @@ const parsed_user = parser.parse(bobson_string)
 console.log('// output:', parsed_user)
 // output: { id: 2, name: 'john' }
 ```
-## Custom Parsers
+
+## Overriding base Parsers/Serializers
 ```javascript
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
-// IMPORTANT! Parser functions should be added before derived types.
-bobson.add_parser_functions({
-  'color': (string) => {
+bobson.override_mixins('decimal', {
+  parser_fn: parseFloat,
+  serializer_fn: (r) => r * 2,
+  comparer_fn: (a, b) => a > b ? 1 : a === b ? 0 : -1,
+})
+const bobson_string = '"12.3"'
+const parser = bobson.get_parser('decimal 0.0 100.0')
+const serializer = bobson.get_serializer('decimal 0.0 100.0')
+const parsed_val = parser.parse(bobson_string)
+const serialized_val = serializer.serialize(parsed_val)
+
+console.log('// output:', parsed_val)
+console.log('// output:', serialized_val)
+// output: 12.3
+// output: 24.6
+```
+Note that **base mixins** should be overridden before adding **derived types**. Otherwise the derived types will not receive the overridden mixins. 
+
+## Adding Parsers/Serializers for derived types
+```javascript
+const {Bobson_Builder} = require('../lib/index.js')
+const bobson = new Bobson_Builder()
+bobson.add_derived_type('color', 'enum red green blue', {
+  parser_fn: (string) => {
     switch (string) {
     case 'red': return '#ff0000'
     case 'green': return '#00ff00'
     case 'blue': return '#0000ff'
-    }},
-})
-bobson.add_derived_types({
-  'color': 'enum red green blue',
+    }
+  },
+  serializer_fn: (string) => {
+    switch (string) {
+    case '#ff0000': return 'red'
+    case '#00ff00': return 'green'
+    case '#0000ff': return 'blue'
+    }
+  },
 })
 const bobson_string = '"green"'
 const parser = bobson.get_parser('color')
+const serializer = bobson.get_serializer('color')
 const parsed_color = parser.parse(bobson_string)
+const serialized_color = serializer.serialize(parsed_color)
 
 console.log('// output:', parsed_color)
+console.log('// output:', serialized_color)
 // output: #00ff00
+// output: green
 ```
+
 ## parse
 ```javascript
 const {Bobson_Builder} = require('../lib/index.js')
@@ -186,29 +220,6 @@ const serialized_int = serializer.serialize(4)
 
 console.log('// output:', serialized_int)
 // output: "4"
-```
-## Custom Serializers
-```javascript
-const {Bobson_Builder} = require('../lib/index.js')
-const bobson = new Bobson_Builder()
-// IMPORTANT! Serializer functions should be added before derived types.
-bobson.add_serializer_functions({
-'color': (string) => {
-switch (string) {
-    case '#ff0000': return 'red'
-    case '#00ff00': return 'green'
-    case '#0000ff': return 'blue'
-    }},
-})
-bobson.add_derived_types({
-  'color': 'enum red green blue',
-})
-const bobson_string = '#00ff00'
-const serializer = bobson.get_serializer('color')
-const parsed_color = serializer.serialize(bobson_string)
-
-console.log('// output:', parsed_color)
-// output: green
 ```
 ## add_base_types
 **TODO: TBD**

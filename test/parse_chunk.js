@@ -1,5 +1,6 @@
 'use strict'
 
+const Big = require('big.js')
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
 let bobson
@@ -14,7 +15,12 @@ function run_valid(t) {
       p.parse_chunk(prefix)
       p.parse_chunk(suffix)
       const result = p.get_result()
-      deepEq(result, t[2])
+      if (result instanceof Big) {
+        deepEq(result.eq(t[2]), true)
+      }
+      else {
+        deepEq(result, t[2])
+      }
     })
   }
 }

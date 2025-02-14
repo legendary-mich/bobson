@@ -209,4 +209,99 @@ describe('custom derived types', () => {
       }
     })
   })
+
+  describe('special cases for add_derived_type (no s at the end)', () => {
+    it('key is not a string', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type(null)
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid Type. Expected: string, found: null')
+      }
+    })
+
+    it('key is prefixed', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type('?lol')
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid prefix. Expected: (not ?), found: (?)')
+      }
+    })
+
+    it('mixins is not an object', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type('lol', 'string 0 12', 2)
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid Type. Expected: object, found: Number')
+      }
+    })
+
+    it('parser_fn is not a function', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type('lol', 'string 0 12', {
+          parser_fn: null,
+          serializer_fn: () => {},
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid parser_fn. Expected: function, found: null')
+      }
+    })
+
+    it('serializer_fn is not a function', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type('lol', 'string 0 12', {
+          parser_fn: () => {},
+          serializer_fn: 2,
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid serializer_fn. Expected: function, found: Number')
+      }
+    })
+
+    it('integer comparer_fn is not a function', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type('lol', 'int_js 0 12', {
+          parser_fn: () => {},
+          serializer_fn: () => {},
+          comparer_fn: 'bobo',
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'mixins.comparer_fn is not a function')
+        // The message is clear, even though the expected one would be:
+        // deepEq(err.message, 'Invalid Type. Expected: function, found: String')
+      }
+    })
+
+    it('decimal comparer_fn is not a function', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_type('lol', 'decimal 0 12', {
+          parser_fn: () => {},
+          serializer_fn: () => {},
+          comparer_fn: 'bobo',
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid comparer_fn. Expected: function, found: String')
+      }
+    })
+  })
 })

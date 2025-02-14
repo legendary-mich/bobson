@@ -29,7 +29,10 @@ describe('custom string parsers', () => {
 
   before(() => {
     bobson = new Bobson_Builder()
-    bobson.add_parser_functions({string:(s)=>s.length})
+    bobson.override_mixins('string', {
+      parser_fn:(s)=>s.length,
+      serializer_fn: s => s,
+    })
   })
 
   describe('top-level-string', () => {
@@ -221,32 +224,6 @@ describe('custom string parsers', () => {
       }
     })
 
-  })
-
-  describe('various cases', () => {
-    it('not an object', () => {
-      try {
-        const builder = new Bobson_Builder()
-        builder.add_parser_functions(null)
-        throw new Error('should have thrown')
-      }
-      catch (err) {
-        deepEq(err.message, 'Invalid Type. Expected: object, found: null')
-      }
-    })
-
-    it('not a function', () => {
-      try {
-        const builder = new Bobson_Builder()
-        builder.add_parser_functions({
-          'key': [],
-        })
-        throw new Error('should have thrown')
-      }
-      catch (err) {
-        deepEq(err.message, 'Invalid Type. Expected: function, found: array')
-      }
-    })
   })
 
 })

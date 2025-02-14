@@ -29,7 +29,10 @@ describe('custom array parsers', () => {
 
   before(() => {
     bobson = new Bobson_Builder()
-    bobson.add_parser_functions({array:(a)=>a.length})
+    bobson.override_mixins('array', {
+      parser_fn:(a)=>a.length,
+      serializer_fn: a => a+'',
+    })
   })
 
   describe('top-level-array', () => {

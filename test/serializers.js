@@ -1,5 +1,6 @@
 'use strict'
 
+const Big = require('big.js')
 const {deepStrictEqual: deepEq} = require('node:assert/strict')
 const {Bobson_Builder} = require('../lib/index.js')
 
@@ -34,13 +35,15 @@ describe('serializers', () => {
     const tests = [
       ["string 0 10", 'ho', '"ho"', 'string 0 10'],
       ["string 0 10", 'h"o', '"h\\"o"', 'string 0 10 h"o'],
+      ["string 0 10", 'h""o', '"h\\"\\"o"', 'string 0 10 h""o'],
       ["string 0 10", 'h\\o', '"h\\\\o"', 'string 0 10 h\\o'],
       ["string 0 10", String.raw`h\o`, String.raw`"h\\o"`, 'string 0 10 h\\o raw'],
+      ["string 0 10", String.raw`h\\o`, String.raw`"h\\\\o"`, 'string 0 10 h\\\\o raw'],
       ["int_4 0 10", 2, '"2"', 'int_4 0 10'],
       ["int_js 0 10", 3, '"3"', 'int_js 0 10'],
       ["int_8 0 10", 4n, '"4"', 'int_8 0 10'],
       ["custom_int", 21, '"21"', 'custom_int 21'],
-      ["decimal 0.00 10.00", '2.34', '"2.34"', 'decimal 0.00 10.00'],
+      ["decimal 0.00 10.00", new Big('2.34'), '"2.34"', 'decimal 0.00 10.00'],
       ["enum olo", 'olo', '"olo"', 'enum olo'],
       ["bool", true, '"true"', 'bool true'],
       ["bool", false, '"false"', 'bool false'],
@@ -51,13 +54,15 @@ describe('serializers', () => {
 
       ["?string 0 10", 'ho', '"ho"', '?string 0 10'],
       ["?string 0 10", 'h"o', '"h\\"o"', '?string 0 10 h"o'],
+      ["?string 0 10", 'h""o', '"h\\"\\"o"', '?string 0 10 h""o'],
       ["?string 0 10", 'h\\o', '"h\\\\o"', '?string 0 10 h\\o'],
       ["?string 0 10", String.raw`h\o`, String.raw`"h\\o"`, '?string 0 10 h\\o raw'],
+      ["?string 0 10", String.raw`h\\o`, String.raw`"h\\\\o"`, '?string 0 10 h\\\\o raw'],
       ["?int_4 0 10", 2, '"2"', '?int_4 0 10'],
       ["?int_js 0 10", 3, '"3"', '?int_js 0 10'],
       ["?int_8 0 10", 4n, '"4"', '?int_8 0 10'],
       ["?custom_int", 21, '"21"', '?custom_int 21'],
-      ["?decimal 0.00 10.00", '2.34', '"2.34"', '?decimal 0.00 10.00'],
+      ["?decimal 0.00 10.00", new Big('2.34'), '"2.34"', '?decimal 0.00 10.00'],
       ["?enum olo", 'olo', '"olo"', '?enum olo'],
       ["?bool", true, '"true"', '?bool true'],
       ["?bool", false, '"false"', '?bool false'],
@@ -81,53 +86,47 @@ describe('serializers', () => {
     }
   })
 
-  describe('invalid', () => {
-    const tests = [
-      [null, 'ho', 'Unknown schema type: null', 'type null'],
-      [() => {}, 'ho', 'Unknown schema type: Function', 'type function'],
-    ]
-    for (const t of tests) {
-      run_invalid(t)
-    }
-
-    it('not an object', () => {
-      try {
-        const builder = new Bobson_Builder()
-        builder.add_serializer_functions(null)
-        throw new Error('should have thrown')
-      }
-      catch (err) {
-        deepEq(err.message, 'Invalid Type. Expected: object, found: null')
-      }
-    })
-
-    it('not a function', () => {
-      try {
-        const builder = new Bobson_Builder()
-        builder.add_serializer_functions({
-          'key': [],
-        })
-        throw new Error('should have thrown')
-      }
-      catch (err) {
-        deepEq(err.message, 'Invalid Type. Expected: function, found: array')
-      }
-    })
-  })
-
   describe('custom serializers', () => {
     it('mixed', () => {
       const builder = new Bobson_Builder()
-      // add_serializer_functions should always come before add_derived_types
-      builder.add_serializer_functions({
-        'string': (value) => '"lolo"',
-        'object': (value) => 223,
-        'array': (value) => ({lobo:'lo'}),
-        'custom_int': (value) => value * 2,
+      builder.override_mixins('string', {
+        parser_fn: r => r,
+        serializer_fn: (value) => 'lolo',
       })
-      builder.add_derived_types({
-        'custom_int': 'int_4 20 30',
-        'custom_cloned': 'custom_int',
+      builder.override_mixins('object', {
+        parser_fn: r => r,
+        serializer_fn: (object, object_schema) => {
+          let res = ''
+          for (const [key, val] of Object.entries(object)) {
+            const child_schema = object_schema.fields.get(key)
+            if (child_schema) {
+              res += `${child_schema.serialize(val)}---${key}`
+            }
+          }
+          return res
+        },
+      })
+      builder.override_mixins('array', {
+        parser_fn: r => r,
+        serializer_fn: (array, array_schema) => {
+          let res = ''
+          const schema = array_schema.child_schema
+          for (const val of array) {
+            res += `--${schema.serialize(val)}-?-`
+          }
+          return res
+        },
+      })
+      builder.add_derived_type('custom_int', 'int_4 20 30', {
+        parser_fn: parseFloat,
+        serializer_fn: (value) => value * 2,
+        comparer_fn: (a,b) => a > b ? 1 : a === b ? 0 : -1,
+      })
+      builder.add_derived_type('custom_cloned', 'custom_int')
+      builder.add_derived_type('custom_cloned_x2', 'custom_int', {
+        parser_fn: parseFloat,
+        serializer_fn: (value) => value * 3,
+        comparer_fn: (a,b) => a > b ? 1 : a === b ? 0 : -1,
       })
 
       // string ================================================================
@@ -144,26 +143,26 @@ describe('serializers', () => {
       deepEq(result, null)
 
       // object ================================================================
-      schema = builder.get_serializer(["object",{}])
-      result = schema.serialize({})
-      deepEq(result, 223)
+      schema = builder.get_serializer(["object",{"+ bob":"string 0 10"}])
+      result = schema.serialize({bob:'x'})
+      deepEq(result, '{"lolo"---bob}')
 
-      schema = builder.get_serializer(["?object",{}])
-      result = schema.serialize({})
-      deepEq(result, 223)
+      schema = builder.get_serializer(["?object",{"+ bob":"string 0 10"}])
+      result = schema.serialize({bob:'y'})
+      deepEq(result, '{"lolo"---bob}')
 
-      schema = builder.get_serializer(["?object",{}])
+      schema = builder.get_serializer(["?object",{"+ bob":"string 0 10"}])
       result = schema.serialize(null)
       deepEq(result, null)
 
       // array =================================================================
       schema = builder.get_serializer(["array 0 1", "string 0 1"])
-      result = schema.serialize([])
-      deepEq(result, {lobo:'lo'})
+      result = schema.serialize(['x'])
+      deepEq(result, '[--"lolo"-?-]')
 
       schema = builder.get_serializer(["?array 0 1", "string 0 1"])
-      result = schema.serialize([])
-      deepEq(result, {lobo:'lo'})
+      result = schema.serialize(['y'])
+      deepEq(result, '[--"lolo"-?-]')
 
       schema = builder.get_serializer(["?array 0 1", "string 0 1"])
       result = schema.serialize(null)
@@ -172,11 +171,11 @@ describe('serializers', () => {
       // custom_int ============================================================
       schema = builder.get_serializer("custom_int")
       result = schema.serialize(23)
-      deepEq(result, 46)
+      deepEq(result, '"46"')
 
       schema = builder.get_serializer("custom_int")
       result = schema.serialize(24)
-      deepEq(result, 48)
+      deepEq(result, '"48"')
 
       schema = builder.get_serializer("custom_int")
       result = schema.serialize(null)
@@ -185,13 +184,26 @@ describe('serializers', () => {
       // custom_cloned =========================================================
       schema = builder.get_serializer("custom_cloned")
       result = schema.serialize(23)
-      deepEq(result, 46)
+      deepEq(result, '"46"')
 
       schema = builder.get_serializer("custom_cloned")
       result = schema.serialize(24)
-      deepEq(result, 48)
+      deepEq(result, '"48"')
 
       schema = builder.get_serializer("custom_cloned")
+      result = schema.serialize(null)
+      deepEq(result, null)
+
+      // custom_cloned x2 ======================================================
+      schema = builder.get_serializer("custom_cloned_x2")
+      result = schema.serialize(23)
+      deepEq(result, '"69"')
+
+      schema = builder.get_serializer("custom_cloned_x2")
+      result = schema.serialize(24)
+      deepEq(result, '"72"')
+
+      schema = builder.get_serializer("custom_cloned_x2")
       result = schema.serialize(null)
       deepEq(result, null)
 

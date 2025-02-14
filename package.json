@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "bench": "node benchmarks/integers.js",
+    "lint": "eslint lib/**/*.js test/**/*.js",
     "test": "mocha test/**/*.js"
   },
   "main": "lib/index.js",
@@ -10,6 +11,9 @@
     "fail-zero": true,
     "timeout": 1000,
     "watch": true
+  },
+  "dependencies": {
+    "big.js": "^5.2.1"
   },
   "devDependencies": {
     "ajv": "^8.17.1",
