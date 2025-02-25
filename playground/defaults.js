@@ -12,8 +12,6 @@ bobson.add_derived_types({
   }],
 })
 const bobson_string = '{"id":"2"}'
-const parser = bobson.get_parser('user')
-const parsed_user = parser.parse(bobson_string)
-
+const parsed_user = bobson.parse('user', bobson_string)
 console.log('// output:', parsed_user)
 // output: { id: 2, name: 'john' }
