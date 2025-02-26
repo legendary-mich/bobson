@@ -69,16 +69,16 @@ describe('serializers', () => {
       [["?object",{"+ bob":"string 0 10"}], {bob:'don'}, '{"bob":"don"}', '?obj bob'],
       [["?array 0 10", "string 0 10"], ['don','olk'], '["don","olk"]', '?arr don olk'],
 
-      ["?string 0 10", null, null, '?string null'],
-      ["?int_4 0 10", null, null, '?int_4 null'],
-      ["?int_js 0 10", null, null, '?int_js null'],
-      ["?int_8 0 10", null, null, '?int_8 null'],
-      ["?custom_int", null, null, '?custom_int null'],
-      ["?decimal 0.00 10.00", null, null, '?decimal null'],
-      ["?enum olo", null, null, '?enum null'],
-      ["?bool", null, null, '?bool null'],
-      [["?object",{"+ bob":"string 0 10"}], null, null, '?obj null'],
-      [["?array 0 10", "string 0 10"], null, null, '?arr null'],
+      ["?string 0 10", null, 'null', '?string null'],
+      ["?int_4 0 10", null, 'null', '?int_4 null'],
+      ["?int_js 0 10", null, 'null', '?int_js null'],
+      ["?int_8 0 10", null, 'null', '?int_8 null'],
+      ["?custom_int", null, 'null', '?custom_int null'],
+      ["?decimal 0.00 10.00", null, 'null', '?decimal null'],
+      ["?enum olo", null, 'null', '?enum null'],
+      ["?bool", null, 'null', '?bool null'],
+      [["?object",{"+ bob":"string 0 10"}], null, 'null', '?obj null'],
+      [["?array 0 10", "string 0 10"], null, 'null', '?arr null'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -140,7 +140,7 @@ describe('serializers', () => {
 
       schema = builder.get_serializer('?string 0 10')
       result = schema.serialize(null)
-      deepEq(result, null)
+      deepEq(result, 'null')
 
       // object ================================================================
       schema = builder.get_serializer(["object",{"+ bob":"string 0 10"}])
@@ -153,7 +153,7 @@ describe('serializers', () => {
 
       schema = builder.get_serializer(["?object",{"+ bob":"string 0 10"}])
       result = schema.serialize(null)
-      deepEq(result, null)
+      deepEq(result, 'null')
 
       // array =================================================================
       schema = builder.get_serializer(["array 0 1", "string 0 1"])
@@ -166,7 +166,7 @@ describe('serializers', () => {
 
       schema = builder.get_serializer(["?array 0 1", "string 0 1"])
       result = schema.serialize(null)
-      deepEq(result, null)
+      deepEq(result, 'null')
 
       // custom_int ============================================================
       schema = builder.get_serializer("custom_int")
@@ -179,7 +179,7 @@ describe('serializers', () => {
 
       schema = builder.get_serializer("custom_int")
       result = schema.serialize(null)
-      deepEq(result, null)
+      deepEq(result, 'null')
 
       // custom_cloned =========================================================
       schema = builder.get_serializer("custom_cloned")
@@ -192,7 +192,7 @@ describe('serializers', () => {
 
       schema = builder.get_serializer("custom_cloned")
       result = schema.serialize(null)
-      deepEq(result, null)
+      deepEq(result, 'null')
 
       // custom_cloned x2 ======================================================
       schema = builder.get_serializer("custom_cloned_x2")
@@ -205,7 +205,7 @@ describe('serializers', () => {
 
       schema = builder.get_serializer("custom_cloned_x2")
       result = schema.serialize(null)
-      deepEq(result, null)
+      deepEq(result, 'null')
 
     })
   })
