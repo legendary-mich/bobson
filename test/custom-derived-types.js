@@ -233,7 +233,7 @@ describe('custom derived types', () => {
       }
     })
 
-    it('mixins is not an object', () => {
+    it('mixin is not an object', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_derived_type('lol', 'string 0 12', 2)
@@ -283,7 +283,7 @@ describe('custom derived types', () => {
         throw new Error('should have thrown')
       }
       catch (err) {
-        deepEq(err.message, 'mixins.comparer_fn is not a function')
+        deepEq(err.message, 'mixin.comparer_fn is not a function')
         // The message is clear, even though the expected one would be:
         // deepEq(err.message, 'Invalid Type. Expected: function, found: String')
       }

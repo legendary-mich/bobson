@@ -29,7 +29,7 @@ describe('custom string parsers', () => {
 
   before(() => {
     bobson = new Bobson_Builder()
-    bobson.override_mixins('string', {
+    bobson.override_mixin('string', {
       parser_fn:(s)=>s.length,
       serializer_fn: s => s,
     })

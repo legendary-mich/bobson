@@ -89,11 +89,11 @@ describe('serializers', () => {
   describe('custom serializers', () => {
     it('mixed', () => {
       const builder = new Bobson_Builder()
-      builder.override_mixins('string', {
+      builder.override_mixin('string', {
         parser_fn: r => r,
         serializer_fn: (value) => 'lolo',
       })
-      builder.override_mixins('object', {
+      builder.override_mixin('object', {
         parser_fn: r => r,
         serializer_fn: (object, object_schema) => {
           let res = ''
@@ -106,7 +106,7 @@ describe('serializers', () => {
           return res
         },
       })
-      builder.override_mixins('array', {
+      builder.override_mixin('array', {
         parser_fn: r => r,
         serializer_fn: (array, array_schema) => {
           let res = ''

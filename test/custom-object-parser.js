@@ -29,7 +29,7 @@ describe('custom object parsers', () => {
 
   before(() => {
     bobson = new Bobson_Builder()
-    bobson.override_mixins('object', {
+    bobson.override_mixin('object', {
       parser_fn:(o)=>{
         const res = {}
         for (const [key, value] of Object.entries(o)) {

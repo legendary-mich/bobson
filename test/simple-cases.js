@@ -245,7 +245,7 @@ describe('simple cases', () => {
     it('string', () => {
       const schema = "string 0 20"
       const bobson = new Bobson_Builder()
-      bobson.override_mixins('string', {
+      bobson.override_mixin('string', {
         parser_fn: (s) => s.length,
         serializer_fn: s => s,
       })
@@ -257,7 +257,7 @@ describe('simple cases', () => {
     it('?string', () => {
       const schema = "?string 0 20"
       const bobson = new Bobson_Builder()
-      bobson.override_mixins('string', {
+      bobson.override_mixin('string', {
         parser_fn: (s) => s.length,
         serializer_fn: s => s,
       })
@@ -269,7 +269,7 @@ describe('simple cases', () => {
     it('object', () => {
       const schema = ["object", {"+ name": "string 0 20"}]
       const bobson = new Bobson_Builder()
-      bobson.override_mixins('string', {
+      bobson.override_mixin('string', {
         parser_fn: (s) => s.length,
         serializer_fn: s => s,
       })
@@ -281,7 +281,7 @@ describe('simple cases', () => {
     it('array', () => {
       const schema = ["array 0 4", "string 0 20"]
       const bobson = new Bobson_Builder()
-      bobson.override_mixins('string', {
+      bobson.override_mixin('string', {
         parser_fn: (s) => s.length,
         serializer_fn: s => s,
       })

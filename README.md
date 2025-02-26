@@ -227,7 +227,7 @@ console.log('// output:', serialized_color)
 ```javascript
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
-bobson.override_mixins('decimal', {
+bobson.override_mixin('decimal', {
   parser_fn: parseFloat,
   serializer_fn: (r) => r * 2,
   comparer_fn: (a, b) => a > b ? 1 : a === b ? 0 : -1,
@@ -246,7 +246,7 @@ console.log('// output:', serialized_val)
 Note that **base mixins** should be overridden before adding **derived types**. Otherwise the derived types will not receive the overridden mixins.
 
 ## Adding new base types
-In addition to the predefined base types, new base types can be added with the `add_base_type(key, mixins, factory_fn)` method of the `Bobson_Builder`class . For further instructions, look at the `Bobson_Builder` class to see how the predefined base types are created.
+In addition to the predefined base types, new base types can be added with the `add_base_type(key, mixin, factory_fn)` method of the `Bobson_Builder`class . For further instructions, look at the `Bobson_Builder` class to see how the predefined base types are created.
 
 ## Parsing
 Parsers do 2 things:

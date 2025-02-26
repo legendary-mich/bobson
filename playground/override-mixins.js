@@ -2,7 +2,7 @@
 
 const {Bobson_Builder} = require('../lib/index.js')
 const bobson = new Bobson_Builder()
-bobson.override_mixins('decimal', {
+bobson.override_mixin('decimal', {
   parser_fn: parseFloat,
   serializer_fn: (r) => r * 2,
   comparer_fn: (a, b) => a > b ? 1 : a === b ? 0 : -1,

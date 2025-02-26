@@ -5,11 +5,11 @@ const {Bobson_Builder} = require('../lib/index.js')
 
 describe('base types', () => {
 
-  describe('override_mixins', () => {
+  describe('override_mixin', () => {
     it('key is not a string', () => {
       try {
         const builder = new Bobson_Builder()
-        builder.override_mixins(null)
+        builder.override_mixin(null)
         throw new Error('should have thrown')
       }
       catch (err) {
@@ -17,10 +17,10 @@ describe('base types', () => {
       }
     })
 
-    it('mixins is not an object', () => {
+    it('mixin is not an object', () => {
       try {
         const builder = new Bobson_Builder()
-        builder.override_mixins('string', null)
+        builder.override_mixin('string', null)
         throw new Error('should have thrown')
       }
       catch (err) {
@@ -28,10 +28,10 @@ describe('base types', () => {
       }
     })
 
-    it('mixins is missing a parser_fn', () => {
+    it('mixin is missing a parser_fn', () => {
       try {
         const builder = new Bobson_Builder()
-        builder.override_mixins('string', {
+        builder.override_mixin('string', {
           serializer_fn: s => s,
         })
         throw new Error('should have thrown')
@@ -41,10 +41,10 @@ describe('base types', () => {
       }
     })
 
-    it('mixins is missing a serializer_fn', () => {
+    it('mixin is missing a serializer_fn', () => {
       try {
         const builder = new Bobson_Builder()
-        builder.override_mixins('string', {
+        builder.override_mixin('string', {
           parser_fn: s => s,
         })
         throw new Error('should have thrown')
@@ -57,7 +57,7 @@ describe('base types', () => {
     it('key is prefixed', () => {
       try {
         const builder = new Bobson_Builder()
-        builder.override_mixins('?string', {
+        builder.override_mixin('?string', {
           parser_fn: s => s,
           serializer_fn: s => s,
         })
@@ -71,7 +71,7 @@ describe('base types', () => {
     it('key is not known', () => {
       try {
         const builder = new Bobson_Builder()
-        builder.override_mixins('made-up', {})
+        builder.override_mixin('made-up', {})
         throw new Error('should have thrown')
       }
       catch (err) {
@@ -93,7 +93,7 @@ describe('base types', () => {
       }
     })
 
-    it('mixins are not an object', () => {
+    it('mixin are not an object', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_base_type('string', 2)
@@ -104,7 +104,7 @@ describe('base types', () => {
       }
     })
 
-    it('mixins is missing a parser_fn', () => {
+    it('mixin is missing a parser_fn', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_base_type('string', {
@@ -117,7 +117,7 @@ describe('base types', () => {
       }
     })
 
-    it('mixins is missing a serializer_fn', () => {
+    it('mixin is missing a serializer_fn', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_base_type('string', {
