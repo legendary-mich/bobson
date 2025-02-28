@@ -51,7 +51,7 @@ It rejects messages with fields not defined in the schema. So, the prototype pol
 
 ## Short example
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 const user_schema = ["object", {
   '+ name'  : 'string 3 12',   // + means required
@@ -109,7 +109,7 @@ const object      = ["?object", { // nullable
 
 ## Derived Types
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 // Derived types can be added either one by one
 bobson.add_derived_type('username', 'string 3 30') // new type
@@ -131,7 +131,7 @@ console.log('// output:', parsed_auth)
 
 ### Object Inheritance (<)
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 bobson.add_derived_types({
   "user": ["object", {
@@ -157,7 +157,7 @@ console.log('// output:', parsed_employee)
 
 ### Object Defaults
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 bobson.add_derived_types({
   "user": ["object", {
@@ -177,7 +177,7 @@ console.log('// output:', parsed_user)
 ### Recursive Types
 With objects and arrays, recursive types can be declared. Be aware that recursive types can be infinitely deep. Currently there's no mechanism that would protect from infinitely deep structures.
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 bobson.add_derived_types({
   'tree': ["object", {
@@ -193,7 +193,7 @@ console.log('// output:', parsed_tree)
 
 ### Custom Parsers/Serializers in derived types
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 bobson.add_derived_type('color', 'enum red green blue', {
   parser_fn: (string) => {
@@ -225,7 +225,7 @@ console.log('// output:', serialized_color)
 
 ## Overriding base Parsers/Serializers
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 bobson.override_mixin('decimal', {
   parser_fn: parseFloat,
@@ -255,7 +255,7 @@ Parsers do 2 things:
 
 ### bobson.parse(schema, message)
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 const parsed_message = bobson.parse("string 0 10", '"lolo"')
 console.log('// output:', parsed_message)
@@ -264,7 +264,7 @@ console.log('// output:', parsed_message)
 
 ### bobson.get_parser(schema).parse(message)
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 const parser = bobson.get_parser("string 0 10")
 const parsed_message = parser.parse('"lolo"')
@@ -274,7 +274,7 @@ console.log('// output:', parsed_message)
 
 ### bobson.get_parser(schema).parse_chunk(message)
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 const parser = bobson.get_parser("string 0 10")
 parser.parse_chunk('"john w')
@@ -286,7 +286,7 @@ console.log('// output:', parsed_messaeg)
 
 ### bobson.parse_flat_pairs(schema, array)
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 const schema = ["object", {
   '+ id': 'int_js 1 max',
@@ -302,7 +302,7 @@ Serializers take data and convert it to a bobson message. They do not validate t
 - They do not complain if a field of an object is missing.
 - They ignore fields of an object that are not declared in the schema.
 ```javascript
-const {Bobson_Builder} = require('../lib/index.js')
+const {Bobson_Builder} = require('bobson')
 const bobson = new Bobson_Builder()
 const serializer = bobson.get_serializer(["object", {
   "+ name": "string 1 4",

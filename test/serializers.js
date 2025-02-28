@@ -11,7 +11,18 @@ function run_valid(t) {
       'custom_int': 'int_4 20 30',
     })
     const schema = builder.get_serializer(t[0])
-    const result = schema.serialize(t[1])
+    const result = schema.serialize(t[1]) // <--- differs from run_valid_2
+    deepEq(result, t[2])
+  })
+}
+
+function run_valid_2(t) {
+  it(t[3], () => {
+    const builder = new Bobson_Builder()
+    builder.add_derived_types({
+      'custom_int': 'int_4 20 30',
+    })
+    const result = builder.serialize(t[0], t[1]) // <--- differs from run_valid
     deepEq(result, t[2])
   })
 }
@@ -48,7 +59,9 @@ describe('serializers', () => {
       ["bool", true, '"true"', 'bool true'],
       ["bool", false, '"false"', 'bool false'],
       [["object",{"+ bob":"string 0 10"}], {bob:'don'}, '{"bob":"don"}', 'obj bob'],
+      [["object",{"+ bob":"string 0 10"}], {bob:'don',hop:'lo'}, '{"bob":"don"}', 'obj+redundant hop'],
       [["object",{"+ bob":"string 0 10","+ hop":"string 0 10"}], {bob:'don',hop:'lo'}, '{"bob":"don","hop":"lo"}', 'obj bob hop'],
+      [["object",{"+ bob":"string 0 10","+ hop":"string 0 10"}], {bob:'don'}, '{"bob":"don"}', 'obj bob no(hop)'],
       [["array 0 10", "string 0 10"], ['don'], '["don"]', 'arr don'],
       [["array 0 10", "string 0 10"], ['don','olk'], '["don","olk"]', 'arr don olk'],
 
@@ -82,6 +95,7 @@ describe('serializers', () => {
     ]
     for (const t of tests) {
       run_valid(t)
+      run_valid_2(t)
 
     }
   })

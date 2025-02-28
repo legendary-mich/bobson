@@ -1,0 +1,11 @@
+/.git/
+/node_modules/
+/.nyc_output/
+/benchmarks/
+/playground/
+/test/
+/.editorconfig
+/.eslintrc.json
+/.projectile
+/.ignore
+/tsconfig.json
