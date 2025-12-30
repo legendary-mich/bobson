@@ -51,7 +51,7 @@ describe('custom derived type parsers', () => {
       ['custom_1', '"bobo"', 4, 'custom 1 bobo'],
       ['custom_2', '"23"', 2323, 'custom 2 23'],
       ['custom_3', '"23"', 2323, 'custom 3 23'],
-      ['custom_4', '"23"', 232323, 'custom 3 23'],
+      ['custom_4', '"23"', 232323, 'custom 4 23'],
     ]
     for (const t of tests) {
       run_valid(t)

@@ -130,13 +130,27 @@ describe('base types', () => {
       }
     })
 
-    it('factory_fn is not a function', () => {
+    it('raw_factory_fn is not a function', () => {
       try {
         const builder = new Bobson_Builder()
         builder.add_base_type('string', {
           parser_fn: s => s,
           serializer_fn: s => s,
         }, 'lolo')
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid Type. Expected: function, found: String')
+      }
+    })
+
+    it('factory_fn is not a function', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_base_type('string', {
+          parser_fn: s => s,
+          serializer_fn: s => s,
+        }, () => {}, 'lolo')
         throw new Error('should have thrown')
       }
       catch (err) {

@@ -166,7 +166,6 @@ describe('schema validation', () => {
     }
   })
 
-
   describe('object inheritance', () => {
     it('unknown source schema', () => {
       try {
@@ -176,7 +175,7 @@ describe('schema validation', () => {
             "- name": "string 1 10",
           }],
           "employee": ["object",{
-            "< koko": [],
+            "< koko": ["+ bo"],
           }],
         })
         throw new Error('should have thrown')
@@ -192,7 +191,7 @@ describe('schema validation', () => {
         builder.add_derived_types({
           "user": "string 0 20",
           "employee": ["object",{
-            "< user": [],
+            "< user": ["+ bo"],
           }],
         })
         throw new Error('should have thrown')
