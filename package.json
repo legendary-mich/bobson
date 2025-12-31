@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "ajv": "^8.17.1",
+    "eslint": "^8.52.0",
     "mocha": "^10.8.2",
     "nyc": "^17.1.0",
     "secure-json-parse": "^3.0.1"
