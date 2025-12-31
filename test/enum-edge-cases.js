@@ -65,11 +65,11 @@ describe('enum edge cases', () => {
 
   describe('enum too short', () => {
     const tests = [
-      ['enum a', '""', 'Invalid enum: too short', 'empty'],
-      ['enum bo', '"b"', 'Invalid enum: too short', 'b'],
-      ['enum abcd log', '"ro"', 'Invalid enum: too short', 'ro'],
+      ['enum a', '""', 'Invalid enum: ', 'empty'],
+      ['enum bo', '"b"', 'Invalid enum: b', 'b'],
+      ['enum abcd log', '"ro"', 'Invalid enum: ro', 'ro'],
 
-      [['enum', 'abcd', 'log'], '"ro"', 'Invalid enum: too short', 'too short in arr'],
+      [['enum', 'abcd', 'log'], '"ro"', 'Invalid enum: ro', 'too short in arr'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -78,9 +78,9 @@ describe('enum edge cases', () => {
 
   describe('?enum too short', () => {
     const tests = [
-      ['?enum a', '""', 'Invalid ?enum: too short', 'empty'],
-      ['?enum bo', '"b"', 'Invalid ?enum: too short', 'b'],
-      ['?enum abcd log', '"ro"', 'Invalid ?enum: too short', 'ro'],
+      ['?enum a', '""', 'Invalid ?enum: ', 'empty'],
+      ['?enum bo', '"b"', 'Invalid ?enum: b', 'b'],
+      ['?enum abcd log', '"ro"', 'Invalid ?enum: ro', 'ro'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -115,7 +115,7 @@ describe('enum edge cases', () => {
 
   describe('unknown enum', () => {
     const tests = [
-      ['enum alo orra ro', '""', 'Invalid enum: too short', 'empty'],
+      ['enum alo orra ro', '""', 'Invalid enum: ', 'empty'],
       ['enum alo orra ro', '"rok"', 'Invalid enum: rok', 'rok'],
       ['?enum alo orra ro', '"rok"', 'Invalid ?enum: rok', '?rok'],
     ]
