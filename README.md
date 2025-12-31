@@ -166,14 +166,17 @@ bobson.add_derived_types({
     "- name": "string 1 10",
     "- height": "int_4 0 230",
   }, {
-    "name": "john", // default value
+    "name": "john", // default string
+    "height": "2", // default int (comes as a string)
   }],
 })
 const bobson_string = '{"id":"2"}'
 const parsed_user = bobson.parse('user', bobson_string)
 console.log('// output:', parsed_user)
-// output: { id: 2, name: 'john' }
+// output: { id: 2, name: 'john', height: 2 }
 ```
+
+Default values always come as a 'string', and are not supported for object and array types.
 
 ### Recursive Types
 With objects and arrays, recursive types can be declared. Be aware that recursive types can be infinitely deep. Currently there's no mechanism that would protect from infinitely deep structures.

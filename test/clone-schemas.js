@@ -26,7 +26,7 @@ describe('clone schemas', () => {
   it('Object_Schema', () => {
     const fields = new Map()
     const required_fields = []
-    const defaults = {}
+    const defaults = new Map()
     const base = new Object_Schema('old type', old_mixin, fields, required_fields, defaults)
     const clone = base.clone('new type', new_mixin)
     strictEq(clone instanceof Object_Schema, true)
@@ -43,7 +43,7 @@ describe('clone schemas', () => {
   it('Array_Schema', () => {
     const min_length = 2
     const max_length = 3
-    const child_schema = new Object_Schema('old type', old_mixin, new Map(), [], {})
+    const child_schema = new Object_Schema('old type', old_mixin, new Map(), [], new Map())
     const base = new Array_Schema('arr', old_mixin, min_length, max_length, child_schema)
     const clone = base.clone('new type', new_mixin)
     strictEq(clone instanceof Array_Schema, true)

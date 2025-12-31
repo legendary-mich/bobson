@@ -139,7 +139,7 @@ describe('simple cases', () => {
         "two": "bonk",
         "three": "doll",
         "four": "zonk",
-        "num": 4,
+        "num": "4",
       }])
       const result = p.parse('{"one":"aa","three":"bb"}')
       deepEq(result, {one: 'aa', two:'bonk', three: 'bb', four: 'zonk', num: 4})
