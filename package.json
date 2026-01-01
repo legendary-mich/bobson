@@ -1,6 +1,6 @@
 {
   "name": "bobson",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A parser, serializer, and a validation library for bobson messages",
   "license": "MIT",
   "author": "Michał Wojciechowski",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "ajv": "^8.17.1",
+    "eslint": "^8.52.0",
     "mocha": "^10.8.2",
     "nyc": "^17.1.0",
     "secure-json-parse": "^3.0.1"

@@ -54,7 +54,7 @@ describe('bool edge cases', () => {
 
   describe('bool invalid', () => {
     const tests = [
-      ['bool', '"tru"', 'Invalid bool: too short', 'tru'],
+      ['bool', '"tru"', 'Invalid bool: tru', 'tru'],
       ['bool', '"trueee"', 'Invalid bool: too long', 'trueee'],
       ['bool', '"truce"', 'Invalid bool: truce', 'truce'],
       ['bool', '"falce"', 'Invalid bool: falce', 'falce'],
@@ -67,7 +67,7 @@ describe('bool edge cases', () => {
 
   describe('?bool invalid', () => {
     const tests = [
-      ['?bool', '"tru"', 'Invalid ?bool: too short', 'tru'],
+      ['?bool', '"tru"', 'Invalid ?bool: tru', 'tru'],
       ['?bool', '"trueee"', 'Invalid ?bool: too long', 'trueee'],
       ['?bool', '"truce"', 'Invalid ?bool: truce', 'truce'],
       ['?bool', '"falce"', 'Invalid ?bool: falce', 'falce'],

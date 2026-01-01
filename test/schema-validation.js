@@ -53,6 +53,7 @@ describe('schema validation', () => {
       [["object",{"+ bo":true}], 'Unknown schema type: Boolean', 'obj unknown true'],
       [["object",{"+ bo":"string"}], 'Invalid min_length param for string schema: undefined', 'obj invalid string param'],
       [["object",{"+ al":"string 0 1","- al":"int_4 0 1"}], 'Duplicate key found: al', 'duplicate key'],
+      [["object",{"+ ?al":"string 0 1"}], 'Invalid prefix. Expected: (not ?)al, found: (?)al', 'invalid ?prefix'],
     ]
     for (const t of tests) {
       run_invalid(t)
@@ -166,7 +167,6 @@ describe('schema validation', () => {
     }
   })
 
-
   describe('object inheritance', () => {
     it('unknown source schema', () => {
       try {
@@ -176,7 +176,7 @@ describe('schema validation', () => {
             "- name": "string 1 10",
           }],
           "employee": ["object",{
-            "< koko": [],
+            "< koko": ["+ bo"],
           }],
         })
         throw new Error('should have thrown')
@@ -192,7 +192,7 @@ describe('schema validation', () => {
         builder.add_derived_types({
           "user": "string 0 20",
           "employee": ["object",{
-            "< user": [],
+            "< user": ["+ bo"],
           }],
         })
         throw new Error('should have thrown')
@@ -235,6 +235,24 @@ describe('schema validation', () => {
       }
       catch (err) {
         deepEq(err.message, 'Invalid prefix. Expected: (+/-) name, found: (o) name')
+      }
+    })
+
+    it('invalid name ?prefix', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_types({
+          "user": ["object",{
+            "- name": "string 1 10",
+          }],
+          "employee": ["object",{
+            "< user": ["+ ?name"],
+          }],
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid prefix. Expected: (not ?)name, found: (?)name')
       }
     })
 
@@ -350,6 +368,44 @@ describe('schema validation', () => {
       }
       catch (err) {
         deepEq(err.message, 'Duplicate key found: uname')
+        deepEq(err.path, 'employee.< user')
+      }
+    })
+
+    it('invalid prefix', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_types({
+          "user": ["object",{
+            "- name": "string 1 10",
+          }],
+          "employee": ["object",{
+            "< user": ["o uname", "= name"],
+          }],
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid prefix. Expected: (+/-) uname, found: (o) uname')
+        deepEq(err.path, 'employee.< user')
+      }
+    })
+
+    it('invalid name ?prefix', () => {
+      try {
+        const builder = new Bobson_Builder()
+        builder.add_derived_types({
+          "user": ["object",{
+            "- name": "string 1 10",
+          }],
+          "employee": ["object",{
+            "< user": ["+ ?uname", "= name"],
+          }],
+        })
+        throw new Error('should have thrown')
+      }
+      catch (err) {
+        deepEq(err.message, 'Invalid prefix. Expected: (not ?)uname, found: (?)uname')
         deepEq(err.path, 'employee.< user')
       }
     })

@@ -46,12 +46,14 @@ describe('custom derived type inheritance aliases', () => {
           "+ user_id", "= id",
           "- uname", "= name",
           "- bname", "= name",
+          "- nname", "= ?name",
           "+ height",
         ],
         "< email": [
           "+ address",
           "- sth", "= something",
           "+ email_id", "= id",
+          "- hts", "= ?something",
         ],
       }],
     })
@@ -61,12 +63,12 @@ describe('custom derived type inheritance aliases', () => {
     const tests = [
       ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street"}',
         {user_id:2n,email_id:3,height:180,'address':'street'}, 'without optional'],
-      ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street","uname":"bob","bname":"dot","sth":"lol"}',
-        {user_id:2n,email_id:3,height:180,'address':'street',uname:'bob',bname:'dot',sth:'lol'}, 'with optional'],
+      ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street","uname":"bob","bname":"dot","nname":"not","sth":"lol","hts":"bombom"}',
+        {user_id:2n,email_id:3,height:180,'address':'street',uname:'bob',bname:'dot',nname:'not',sth:'lol',hts:'bombom'}, 'with optional'],
       ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street","uname":"bob","sth":"lol"}',
         {user_id:2n,email_id:3,height:180,'address':'street',uname:'bob',sth:'lol'}, 'with optional'],
-      ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street","uname":null,"sth":"lol"}',
-        {user_id:2n,email_id:3,height:180,'address':'street',uname:null,sth:'lol'}, 'with null'],
+      ['user_email', '{"user_id":"2","email_id":"3","height":"180","address":"street","uname":null,"nname":null,"sth":"lol","hts":null}',
+        {user_id:2n,email_id:3,height:180,'address':'street',uname:null,nname:null,sth:'lol',hts:null}, 'with null'],
     ]
     for (const t of tests) {
       run_valid(t)
@@ -101,6 +103,10 @@ describe('custom derived type inheritance aliases', () => {
         'Invalid ?string: too short', 'invalid uname'],
       ['user_email', '{"user_id":"22","email_id":"33","height":"180","address":"street","uname":"u","bname":"","sth":"lol"}',
         'Invalid ?string: too short', 'invalid bname'],
+      ['user_email', '{"user_id":"22","email_id":"33","height":"180","address":"street","uname":"u","bname":"a","nname":"",sth":"lol"}',
+        'Invalid ?string: too short', 'invalid nname'],
+      ['user_email', '{"user_id":"22","email_id":"33","height":"180","address":"street","uname":"u","bname":"ho","sth":"lol","hts":""}',
+        'Invalid ?string: too short', 'invalid hts'],
       ['user_email', '{"user_id":"22","email_id":"3","height":"180","address":"street","uname":"bob","sth":null}',
         'Invalid string: null', 'invalid string: null'],
     ]

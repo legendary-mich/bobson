@@ -146,13 +146,14 @@ bobson.add_derived_types({
       "+ user_id", "= id", // with the user_id being an alias for the user.id
       "+ name",            // Note, that the name becomes required here
       "- height",
+      "- n_height", "= ?height", // n_height becomes a nullable version of the height
     ],
   }],
 })
-const bobson_string = '{"id":"2","job":"cook","name":"bob","height":"180","user_id":"3"}'
+const bobson_string = '{"id":"2","job":"cook","name":"bob","height":"180","n_height":null,"user_id":"3"}'
 const parsed_employee = bobson.parse('employee', bobson_string)
 console.log('// output:', parsed_employee)
-// output: { id: 2n, job: 'cook', name: 'bob', height: 180, user_id: 3 }
+// output: { id: 2n, job: 'cook', name: 'bob', height: 180, n_height: null, user_id: 3 }
 ```
 
 ### Object Defaults
@@ -165,14 +166,17 @@ bobson.add_derived_types({
     "- name": "string 1 10",
     "- height": "int_4 0 230",
   }, {
-    "name": "john", // default value
+    "name": "john", // default string
+    "height": "2", // default int (comes as a string)
   }],
 })
 const bobson_string = '{"id":"2"}'
 const parsed_user = bobson.parse('user', bobson_string)
 console.log('// output:', parsed_user)
-// output: { id: 2, name: 'john' }
+// output: { id: 2, name: 'john', height: 2 }
 ```
+
+Default values always come as a 'string', and are not supported for object and array types.
 
 ### Recursive Types
 With objects and arrays, recursive types can be declared. Be aware that recursive types can be infinitely deep. Currently there's no mechanism that would protect from infinitely deep structures.
