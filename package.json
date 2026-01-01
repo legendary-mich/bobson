@@ -1,6 +1,6 @@
 {
   "name": "bobson",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A parser, serializer, and a validation library for bobson messages",
   "license": "MIT",
   "author": "Michał Wojciechowski",
